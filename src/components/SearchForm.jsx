@@ -21,7 +21,6 @@ function SearchForm() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="검색어를 입력하세요"
-        aria-label="Search"
         variant="outlined"
         size="small"
         fullWidth

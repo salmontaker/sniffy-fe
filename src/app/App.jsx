@@ -18,7 +18,14 @@ function App() {
 
   const theme = useMemo(() => {
     return createTheme({
-      palette: { mode },
+      palette: {
+        mode,
+        primary: {
+          main: "#FF8A00",
+          light: "#FFE7C2",
+          dark: "#FF7000"
+        }
+      },
       components: {
         MuiCssBaseline: {
           styleOverrides: (themeParam) => ({

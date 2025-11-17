@@ -37,7 +37,6 @@ function Menu() {
       <IconButton
         onClick={() => toggleTheme()}
         color="inherit"
-        aria-label="toggle dark mode"
         sx={{
           width: { xs: "100%", md: "auto" },
           borderRadius: 2,

@@ -1,6 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
-import { AppBar, Box, Collapse, Container, IconButton, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Collapse, Container, IconButton, Toolbar } from "@mui/material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -21,18 +21,9 @@ function Header() {
     >
       <Container maxWidth="lg">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            component={Link}
-            to="/"
-            sx={{
-              color: "text.primary",
-              textDecoration: "none",
-              "&:hover": { color: "primary.main" }
-            }}
-          >
-            Sniffy
-          </Typography>
+          <Link to="/">
+            <Box component="img" src="/logo.png" sx={{ width: 50, height: 50 }} />
+          </Link>
 
           <Box sx={{ flexGrow: 1, px: { xs: 2, sm: 4, md: 8 } }}>
             <SearchForm />

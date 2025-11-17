@@ -14,6 +14,9 @@ function Footer() {
         <Typography variant="body2" color="text.secondary" align="center">
           &copy; {new Date().getFullYear()} Sniffy. All rights reserved.
         </Typography>
+        <Typography variant="body2" color="text.secondary" align="center">
+          본 서비스의 습득물 정보는 경찰청 LOST112 공개 API를 통해 제공됩니다.
+        </Typography>
       </Container>
     </Box>
   );
