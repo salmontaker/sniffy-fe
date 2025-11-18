@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  Container,
   Divider,
   Grid,
   List,
@@ -16,56 +15,38 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
+import useApi from "../hooks/useApi";
+import foundItemService from "../services/foundItemService";
+import statsService from "../services/statsService";
+
 function HomePage() {
-  const [stats, setStats] = useState(null);
-  const [recentItems, setRecentItems] = useState([]);
-  const [topCenters, setTopCenters] = useState([]);
-  const [topCategories, setTopCategories] = useState([]);
+  const { execute: getFoundItemTotals } = useApi(statsService.getFoundItemTotals);
+  const { execute: getSampleItems } = useApi(foundItemService.getSampleItems);
+  const { execute: getTop5Agencies } = useApi(statsService.getTop5Agencies);
+  const { execute: getTop5Categories } = useApi(statsService.getTop5Categories);
+
+  const [foundItemTotals, setFoundItemTotals] = useState(null);
+  const [sampleItems, setSampleItems] = useState([]);
+  const [top5Agencies, setTop5Agencies] = useState([]);
+  const [top5Categories, setTop5Categories] = useState([]);
 
   useEffect(() => {
-    async function mockFetch() {
-      try {
-        await new Promise((res) => setTimeout(res, 500));
+    getFoundItemTotals().then((res) => {
+      setFoundItemTotals({ ...res.data });
+    });
 
-        const data = {
-          todayTotal: 1161,
-          weekTotal: 20889,
-          monthTotal: 304873,
-          lastUpdated: "2025-11-17 04:03",
-          topCenters: [
-            "서울역 유실물센터",
-            "강남역 유실물센터",
-            "시청 유실물센터",
-            "홍대입구 유실물센터",
-            "잠실역 유실물센터"
-          ],
-          topCategories: ["지갑", "휴대폰", "가방", "우산", "카드"],
-          items: [
-            { id: 1, name: "검정색 지갑", category: "지갑", date: "2025-11-17" },
-            { id: 2, name: "하얀 휴대폰", category: "전자기기", date: "2025-11-17" },
-            { id: 3, name: "파란 우산", category: "생활용품", date: "2025-11-17" },
-            { id: 4, name: "갈색 가방", category: "가방", date: "2025-11-16" },
-            { id: 5, name: "신용카드", category: "카드", date: "2025-11-16" },
-            { id: 6, name: "에어팟 케이스", category: "전자기기", date: "2025-11-16" }
-          ]
-        };
+    getSampleItems().then((res) => {
+      setSampleItems(res.data);
+    });
 
-        setStats({
-          todayTotal: data.todayTotal,
-          weekTotal: data.weekTotal,
-          monthTotal: data.monthTotal,
-          lastUpdated: data.lastUpdated
-        });
-        setRecentItems(data.items);
-        setTopCenters(data.topCenters);
-        setTopCategories(data.topCategories);
-      } catch (error) {
-        console.error(error);
-      }
-    }
+    getTop5Agencies().then((res) => {
+      setTop5Agencies(res.data);
+    });
 
-    mockFetch();
-  }, []);
+    getTop5Categories().then((res) => {
+      setTop5Categories(res.data);
+    });
+  }, [getFoundItemTotals, getSampleItems, getTop5Agencies, getTop5Categories]);
 
   return (
     <>
@@ -184,11 +165,17 @@ function HomePage() {
                 바쁜 유실물센터 TOP 5
               </Typography>
               <Divider sx={{ my: 1 }} />
-              {topCenters.length ? (
+              {top5Agencies.length ? (
                 <List dense>
-                  {topCenters.map((center, index) => (
+                  {top5Agencies.map((data, index) => (
                     <ListItem key={index} sx={{ py: 0.5 }}>
-                      <ListItemText primary={`${index + 1}. ${center}`} primaryTypographyProps={{ variant: "body2" }} />
+                      <ListItemText
+                        primary={`${index + 1}. ${data.name}`}
+                        slotProps={{ primary: { variant: "body2" } }}
+                      />
+                      <Typography variant="body2" color="text.secondary">
+                        {data.todayTotal.toLocaleString()}건
+                      </Typography>
                     </ListItem>
                   ))}
                 </List>
@@ -209,14 +196,17 @@ function HomePage() {
                 많이 잃어버린 품목 TOP 5
               </Typography>
               <Divider sx={{ my: 1 }} />
-              {topCategories.length ? (
+              {top5Categories.length ? (
                 <List dense>
-                  {topCategories.map((category, index) => (
+                  {top5Categories.map((data, index) => (
                     <ListItem key={index} sx={{ py: 0.5 }}>
                       <ListItemText
-                        primary={`${index + 1}. ${category}`}
-                        primaryTypographyProps={{ variant: "body2" }}
+                        primary={`${index + 1}. ${data.category}`}
+                        slotProps={{ primary: { variant: "body2" } }}
                       />
+                      <Typography variant="body2" color="text.secondary">
+                        {data.todayTotal.toLocaleString()}건
+                      </Typography>
                     </ListItem>
                   ))}
                 </List>
@@ -240,7 +230,7 @@ function HomePage() {
 
         <Card sx={{ borderRadius: 3, boxShadow: "0 3px 8px rgba(0,0,0,0.06)" }}>
           <CardContent>
-            {!recentItems.length ? (
+            {!sampleItems.length ? (
               <Box display="flex" justifyContent="center" alignItems="center" py={4}>
                 <CircularProgress size={24} />
                 <Typography variant="body2" color="text.secondary" ml={1}>
@@ -249,13 +239,15 @@ function HomePage() {
               </Box>
             ) : (
               <Grid container spacing={2}>
-                {recentItems.map((item) => (
+                {sampleItems.map((item) => (
                   <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.id}>
                     <Card
                       sx={{
                         height: "100%",
                         borderRadius: 2,
                         boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+                        border: "1px solid",
+                        borderColor: "divider",
                         transition: "transform 0.15s ease, box-shadow 0.15s ease",
                         "&:hover": {
                           transform: "translateY(-3px)",
@@ -265,32 +257,29 @@ function HomePage() {
                     >
                       <Box
                         sx={{
-                          height: 140,
+                          height: 250,
                           bgcolor: "grey.100",
-                          backgroundImage: `url(/images/${item.category}.jpg)`,
+                          backgroundImage: `url(${item.fdFilePathImg})`,
                           backgroundSize: "cover",
                           backgroundPosition: "center",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center"
                         }}
-                      >
-                        {!item.preview && (
-                          <Typography variant="body2" color="text.disabled">
-                            미리보기 없음
-                          </Typography>
-                        )}
-                      </Box>
+                      />
 
                       <CardContent sx={{ p: 2 }}>
                         <Typography variant="subtitle1" color="text.primary" noWrap fontWeight={600}>
-                          {item.name}
+                          {item.fdPrdtNm}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                          📁 카테고리: {item.category}
+                          📁 카테고리: {item.prdtClNm}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: "block" }}>
-                          🗓 등록일: {item.date}
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          🗓 습득일: {item.fdYmd}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          🏛 보관장소: {item.agencyName}
                         </Typography>
                       </CardContent>
                     </Card>
@@ -308,7 +297,7 @@ function HomePage() {
         </Typography>
         <Card>
           <CardContent>
-            {!stats ? (
+            {!foundItemTotals ? (
               <Box display="flex" justifyContent="center" alignItems="center" py={4}>
                 <CircularProgress size={24} />
                 <Typography variant="body2" color="text.secondary" ml={1}>
@@ -322,7 +311,7 @@ function HomePage() {
                     오늘 등록
                   </Typography>
                   <Typography variant="h5" color="primary">
-                    {stats.todayTotal}건
+                    {foundItemTotals.todayTotal.toLocaleString()}건
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 3 }}>
@@ -330,7 +319,7 @@ function HomePage() {
                     이번 주 등록
                   </Typography>
                   <Typography variant="h5" color="primary">
-                    {stats.weekTotal}건
+                    {foundItemTotals.weekTotal.toLocaleString()}건
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 3 }}>
@@ -338,15 +327,15 @@ function HomePage() {
                     이번 달 등록
                   </Typography>
                   <Typography variant="h5" color="primary">
-                    {stats.monthTotal}건
+                    {foundItemTotals.monthTotal.toLocaleString()}건
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 3 }}>
                   <Typography variant="body2" color="text.secondary">
                     최종 업데이트
                   </Typography>
-                  <Typography variant="h5" color="primary">
-                    {stats.lastUpdated}
+                  <Typography variant="h6" color="primary">
+                    {new Date(foundItemTotals.lastUpdated).toLocaleString()}
                   </Typography>
                 </Grid>
               </Grid>
