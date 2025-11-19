@@ -15,6 +15,7 @@ import {
 import { useEffect, useState } from "react";
 
 import EmptyData from "../components/home/EmptyData";
+import KakaoMap from "../components/home/KakaoMap";
 import LoadingSpinner from "../components/home/LoadingSpinner";
 import useApi from "../hooks/useApi";
 import foundItemService from "../services/foundItemService";
@@ -148,7 +149,7 @@ function HomePage() {
                 position: "relative"
               }}
             >
-              <Typography color="text.disabled">지도 컴포넌트</Typography>
+              <KakaoMap />
             </Box>
           </CardContent>
         </Card>
