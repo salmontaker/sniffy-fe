@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   CardContent,
-  CircularProgress,
   Divider,
   Grid,
   List,
@@ -15,15 +14,17 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
+import EmptyData from "../components/home/EmptyData";
+import LoadingSpinner from "../components/home/LoadingSpinner";
 import useApi from "../hooks/useApi";
 import foundItemService from "../services/foundItemService";
 import statsService from "../services/statsService";
 
 function HomePage() {
-  const { execute: getFoundItemTotals } = useApi(statsService.getFoundItemTotals);
-  const { execute: getSampleItems } = useApi(foundItemService.getSampleItems);
-  const { execute: getTop5Agencies } = useApi(statsService.getTop5Agencies);
-  const { execute: getTop5Categories } = useApi(statsService.getTop5Categories);
+  const { execute: getFoundItemTotals, loading: foundItemTotalsLoading } = useApi(statsService.getFoundItemTotals);
+  const { execute: getSampleItems, loading: sampleItemsLoading } = useApi(foundItemService.getSampleItems);
+  const { execute: getTop5Agencies, loading: top5AgenciesLoading } = useApi(statsService.getTop5Agencies);
+  const { execute: getTop5Categories, loading: top5CategoriesLoading } = useApi(statsService.getTop5Categories);
 
   const [foundItemTotals, setFoundItemTotals] = useState(null);
   const [sampleItems, setSampleItems] = useState([]);
@@ -165,7 +166,11 @@ function HomePage() {
                 바쁜 유실물센터 TOP 5
               </Typography>
               <Divider sx={{ my: 1 }} />
-              {top5Agencies.length ? (
+              {top5AgenciesLoading ? (
+                <LoadingSpinner />
+              ) : top5Agencies.length === 0 ? (
+                <EmptyData message="유실물센터 데이터가 없습니다" />
+              ) : (
                 <List dense>
                   {top5Agencies.map((data, index) => (
                     <ListItem key={index} sx={{ py: 0.5 }}>
@@ -179,13 +184,6 @@ function HomePage() {
                     </ListItem>
                   ))}
                 </List>
-              ) : (
-                <Box display="flex" justifyContent="center" alignItems="center" py={3}>
-                  <CircularProgress size={24} />
-                  <Typography variant="body2" color="text.secondary" ml={1}>
-                    불러오는 중...
-                  </Typography>
-                </Box>
               )}
             </CardContent>
           </Card>
@@ -196,7 +194,11 @@ function HomePage() {
                 많이 잃어버린 품목 TOP 5
               </Typography>
               <Divider sx={{ my: 1 }} />
-              {top5Categories.length ? (
+              {top5CategoriesLoading ? (
+                <LoadingSpinner />
+              ) : top5Categories.length === 0 ? (
+                <EmptyData message="품목 데이터가 없습니다" />
+              ) : (
                 <List dense>
                   {top5Categories.map((data, index) => (
                     <ListItem key={index} sx={{ py: 0.5 }}>
@@ -210,13 +212,6 @@ function HomePage() {
                     </ListItem>
                   ))}
                 </List>
-              ) : (
-                <Box display="flex" justifyContent="center" alignItems="center" py={3}>
-                  <CircularProgress size={24} />
-                  <Typography variant="body2" color="text.secondary" ml={1}>
-                    불러오는 중...
-                  </Typography>
-                </Box>
               )}
             </CardContent>
           </Card>
@@ -230,13 +225,10 @@ function HomePage() {
 
         <Card sx={{ borderRadius: 3, boxShadow: "0 3px 8px rgba(0,0,0,0.06)" }}>
           <CardContent>
-            {!sampleItems.length ? (
-              <Box display="flex" justifyContent="center" alignItems="center" py={4}>
-                <CircularProgress size={24} />
-                <Typography variant="body2" color="text.secondary" ml={1}>
-                  불러오는 중...
-                </Typography>
-              </Box>
+            {sampleItemsLoading ? (
+              <LoadingSpinner />
+            ) : sampleItems.length === 0 ? (
+              <EmptyData message="습득물 데이터가 없습니다" />
             ) : (
               <Grid container spacing={2}>
                 {sampleItems.map((item) => (
@@ -259,7 +251,7 @@ function HomePage() {
                         sx={{
                           height: 250,
                           bgcolor: "grey.100",
-                          backgroundImage: `url(${item.fdFilePathImg})`,
+                          backgroundImage: `url(${item?.fdFilePathImg})`,
                           backgroundSize: "cover",
                           backgroundPosition: "center",
                           display: "flex",
@@ -270,16 +262,16 @@ function HomePage() {
 
                       <CardContent sx={{ p: 2 }}>
                         <Typography variant="subtitle1" color="text.primary" noWrap fontWeight={600}>
-                          {item.fdPrdtNm}
+                          {item?.fdPrdtNm}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                          📁 카테고리: {item.prdtClNm}
+                          📁 카테고리: {item?.prdtClNm}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                          🗓 습득일: {item.fdYmd}
+                          🗓 습득일: {item?.fdYmd}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                          🏛 보관장소: {item.agencyName}
+                          🏛 보관장소: {item?.agencyName}
                         </Typography>
                       </CardContent>
                     </Card>
@@ -297,13 +289,10 @@ function HomePage() {
         </Typography>
         <Card>
           <CardContent>
-            {!foundItemTotals ? (
-              <Box display="flex" justifyContent="center" alignItems="center" py={4}>
-                <CircularProgress size={24} />
-                <Typography variant="body2" color="text.secondary" ml={1}>
-                  불러오는 중...
-                </Typography>
-              </Box>
+            {foundItemTotalsLoading ? (
+              <LoadingSpinner />
+            ) : !foundItemTotals ? (
+              <EmptyData message="등록 현황 데이터가 없습니다" />
             ) : (
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, sm: 3 }}>
@@ -311,7 +300,7 @@ function HomePage() {
                     오늘 등록
                   </Typography>
                   <Typography variant="h5" color="primary">
-                    {foundItemTotals.todayTotal.toLocaleString()}건
+                    {foundItemTotals?.todayTotal.toLocaleString()}건
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 3 }}>
@@ -319,7 +308,7 @@ function HomePage() {
                     이번 주 등록
                   </Typography>
                   <Typography variant="h5" color="primary">
-                    {foundItemTotals.weekTotal.toLocaleString()}건
+                    {foundItemTotals?.weekTotal.toLocaleString()}건
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 3 }}>
@@ -327,7 +316,7 @@ function HomePage() {
                     이번 달 등록
                   </Typography>
                   <Typography variant="h5" color="primary">
-                    {foundItemTotals.monthTotal.toLocaleString()}건
+                    {foundItemTotals?.monthTotal.toLocaleString()}건
                   </Typography>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 3 }}>
@@ -335,7 +324,7 @@ function HomePage() {
                     최종 업데이트
                   </Typography>
                   <Typography variant="h6" color="primary">
-                    {new Date(foundItemTotals.lastUpdated).toLocaleString()}
+                    {new Date(foundItemTotals?.lastUpdated).toLocaleString()}
                   </Typography>
                 </Grid>
               </Grid>
