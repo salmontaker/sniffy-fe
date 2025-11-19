@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { selectThemeMode, setThemeMode } from "../redux/themeSlice.js";
 
-function useThemeMode() {
+const useThemeMode = () => {
   const dispatch = useDispatch();
   const mode = useSelector(selectThemeMode);
 
@@ -15,6 +15,6 @@ function useThemeMode() {
   }, [dispatch, mode]);
 
   return { mode, toggleTheme };
-}
+};
 
 export default useThemeMode;
