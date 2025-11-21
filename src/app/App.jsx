@@ -4,11 +4,11 @@ import { useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { Routes } from "react-router-dom";
 
-import Layout from "../components/Layout.jsx";
-import useApi from "../hooks/useApi.jsx";
-import useThemeMode from "../hooks/useThemeMode.jsx";
-import { loginAction } from "../redux/authSlice.js";
-import authService from "../services/authService.js";
+import Layout from "../components/Layout";
+import useApi from "../hooks/useApi";
+import useThemeMode from "../hooks/useThemeMode";
+import { loginAction } from "../redux/authSlice";
+import authService from "../services/authService";
 import { appRoutes } from "./routes";
 
 function App() {
