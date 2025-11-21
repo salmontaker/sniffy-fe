@@ -25,18 +25,6 @@ function App() {
           light: "#FFE7C2",
           dark: "#FF7000"
         }
-      },
-      components: {
-        MuiCssBaseline: {
-          styleOverrides: (themeParam) => ({
-            "*": {
-              // color나 배경색이 바뀔 때 부드럽게 변하도록 설정
-              transition: themeParam.transitions.create(["color", "background-color"], {
-                duration: themeParam.transitions.duration.shortest
-              })
-            }
-          })
-        }
       }
     });
   }, [mode]);
