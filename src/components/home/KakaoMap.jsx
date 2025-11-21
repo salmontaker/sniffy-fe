@@ -43,17 +43,20 @@ function KakaoMap() {
   };
 
   useEffect(() => {
-    fetchAgenciesInBounds();
-    getCurrentPosition();
-  }, [fetchAgenciesInBounds, getCurrentPosition]);
-
-  useEffect(() => {
     if (!coords) {
       return;
     }
     setMapCenter({ lat: coords.latitude, lng: coords.longitude });
     setMapLevel(DEFAULT_LEVEL);
   }, [coords]);
+
+  useEffect(() => {
+    getCurrentPosition();
+  }, [getCurrentPosition]);
+
+  useEffect(() => {
+    fetchAgenciesInBounds();
+  }, [mapCenter, mapLevel, fetchAgenciesInBounds]);
 
   if (mapError) {
     return <EmptyData message={mapError.message ?? "지도를 불러올 수 없습니다"} />;
@@ -66,7 +69,10 @@ function KakaoMap() {
         center={mapCenter}
         level={mapLevel}
         onCreate={setMap}
-        onIdle={fetchAgenciesInBounds}
+        onDragEnd={(target) => {
+          const center = target.getCenter();
+          setMapCenter({ lat: center.getLat(), lng: center.getLng() });
+        }}
         onZoomChanged={(target) => setMapLevel(target.getLevel())}
       >
         <MarkerClusterer averageCenter={true} minLevel={DEFAULT_LEVEL}>
