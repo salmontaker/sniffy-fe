@@ -1,33 +1,18 @@
-import PetsIcon from "@mui/icons-material/Pets";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import { createSearchParams, useNavigate } from "react-router-dom";
+
+import ItemSearchForm from "../../search/ItemSearchForm";
 
 function ItemSearchSection() {
+  const navigate = useNavigate();
+
+  const handleSearchSubmit = (searchParams) => {
+    navigate(`/search?${createSearchParams(searchParams)}`);
+  };
+
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" mb={4} gap={1}>
-      <TextField
-        placeholder="스니피에게 물어보세요 (예: 지갑, 핸드폰)"
-        variant="outlined"
-        size="medium"
-        fullWidth
-        sx={{
-          bgcolor: "background.paper",
-          borderRadius: 2
-        }}
-      />
-      <Button
-        variant="contained"
-        size="medium"
-        endIcon={<PetsIcon />}
-        sx={{
-          px: 3,
-          py: 2,
-          bgcolor: "primary.main",
-          "&:hover": { bgcolor: "primary.dark" },
-          flexShrink: 0
-        }}
-      >
-        <Typography variant="body1">찾아줘!</Typography>
-      </Button>
+    <Box mb={4}>
+      <ItemSearchForm onSubmit={handleSearchSubmit} />
     </Box>
   );
 }
