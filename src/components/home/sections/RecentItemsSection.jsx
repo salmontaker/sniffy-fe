@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 import useApi from "../../../hooks/useApi";
 import foundItemService from "../../../services/foundItemService";
-import EmptyData from "../EmptyData";
-import LoadingSpinner from "../LoadingSpinner";
+import EmptyData from "../../common/EmptyData";
+import LoadingSpinner from "../../common/LoadingSpinner";
 
 function RecentItemsSection() {
   const { execute: getSampleItems, loading: sampleItemsLoading } = useApi(foundItemService.getSampleItems);

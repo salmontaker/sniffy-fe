@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 import useApi from "../../../hooks/useApi";
 import statsService from "../../../services/statsService";
-import EmptyData from "../EmptyData";
-import LoadingSpinner from "../LoadingSpinner";
+import EmptyData from "../../common/EmptyData";
+import LoadingSpinner from "../../common/LoadingSpinner";
 
 function DailyReportSection() {
   const { execute: getTop5Agencies, loading: top5AgenciesLoading } = useApi(statsService.getTop5Agencies);

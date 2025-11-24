@@ -6,7 +6,7 @@ import { Map, MapMarker, MarkerClusterer, useKakaoLoader } from "react-kakao-map
 import useApi from "../../hooks/useApi";
 import useGeolocation from "../../hooks/useGeolocation";
 import agencyService from "../../services/agencyService";
-import EmptyData from "./EmptyData";
+import EmptyData from "./../common/EmptyData";
 
 const DEFAULT_CENTER = { lat: 37.5666805, lng: 126.9784147 };
 const DEFAULT_LEVEL = 5;
