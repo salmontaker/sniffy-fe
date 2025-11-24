@@ -62,7 +62,9 @@ function ItemSearchForm({ initialValues = {}, onSubmit }) {
     initialValues.endDate
   ]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
     const searchData = {
       ...filter,
       fdPrdtNm: query,
@@ -93,7 +95,7 @@ function ItemSearchForm({ initialValues = {}, onSubmit }) {
   };
 
   return (
-    <Box mb={4}>
+    <Box component="form" onSubmit={handleSubmit} mb={4}>
       <Box display="flex" justifyContent="center" alignItems="center" gap={1}>
         <TextField
           value={query}
@@ -108,6 +110,7 @@ function ItemSearchForm({ initialValues = {}, onSubmit }) {
           }}
         />
         <Button
+          type="submit"
           variant="contained"
           size="medium"
           endIcon={<PetsIcon />}
@@ -118,7 +121,6 @@ function ItemSearchForm({ initialValues = {}, onSubmit }) {
             "&:hover": { bgcolor: "primary.dark" },
             flexShrink: 0
           }}
-          onClick={handleSubmit}
         >
           <Typography variant="body1">찾아줘!</Typography>
         </Button>
