@@ -1,5 +1,16 @@
-import { Box, Card, CardContent, Divider, List, ListItem, ListItemText, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Divider,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Typography
+} from "@mui/material";
 import { useEffect, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 
 import useApi from "../../../hooks/useApi";
 import statsService from "../../../services/statsService";
@@ -43,14 +54,16 @@ function DailyReportSection() {
             ) : (
               <List dense>
                 {top5Agencies.map((data, index) => (
-                  <ListItem key={index} sx={{ py: 0.5 }}>
-                    <ListItemText
-                      primary={`${index + 1}. ${data.name}`}
-                      slotProps={{ primary: { variant: "body2" } }}
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      {data.todayTotal.toLocaleString()}건
-                    </Typography>
+                  <ListItem key={index} disablePadding>
+                    <ListItemButton component={RouterLink} to={`/search?agencyName=${data.name}`}>
+                      <ListItemText
+                        primary={`${index + 1}. ${data.name}`}
+                        slotProps={{ primary: { variant: "body2" } }}
+                      />
+                      <Typography variant="body2" color="text.secondary">
+                        {data.todayTotal.toLocaleString()}건
+                      </Typography>
+                    </ListItemButton>
                   </ListItem>
                 ))}
               </List>
@@ -71,14 +84,16 @@ function DailyReportSection() {
             ) : (
               <List dense>
                 {top5Categories.map((data, index) => (
-                  <ListItem key={index} sx={{ py: 0.5 }}>
-                    <ListItemText
-                      primary={`${index + 1}. ${data.category}`}
-                      slotProps={{ primary: { variant: "body2" } }}
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      {data.todayTotal.toLocaleString()}건
-                    </Typography>
+                  <ListItem key={index} disablePadding>
+                    <ListItemButton component={RouterLink} to={`/search?prdtClNm=${data.category}`}>
+                      <ListItemText
+                        primary={`${index + 1}. ${data.category}`}
+                        slotProps={{ primary: { variant: "body2" } }}
+                      />
+                      <Typography variant="body2" color="text.secondary">
+                        {data.todayTotal.toLocaleString()}건
+                      </Typography>
+                    </ListItemButton>
                   </ListItem>
                 ))}
               </List>
