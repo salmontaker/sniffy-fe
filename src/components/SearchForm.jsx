@@ -9,9 +9,7 @@ function SearchForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
-    }
+    navigate(`/search${query && `?fdPrdtNm=${query.trim()}`}`);
   };
 
   return (
@@ -34,7 +32,7 @@ function SearchForm() {
             endAdornment: (
               <InputAdornment position="end">
                 <Button type="submit" variant="text" color="primary" size="small" sx={{ mr: -1, minWidth: "auto" }}>
-                  검색
+                  찾아줘!
                 </Button>
               </InputAdornment>
             )
