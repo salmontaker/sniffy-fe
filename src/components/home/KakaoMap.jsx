@@ -11,7 +11,7 @@ import EmptyData from "./../common/EmptyData";
 const DEFAULT_CENTER = { lat: 37.5666805, lng: 126.9784147 };
 const DEFAULT_LEVEL = 5;
 
-function KakaoMap() {
+function KakaoMap({ searchPlace }) {
   const [_, mapError] = useKakaoLoader({
     appkey: import.meta.env.VITE_KAKAO_JS,
     libraries: ["services", "clusterer"]
@@ -53,6 +53,14 @@ function KakaoMap() {
   useEffect(() => {
     getCurrentPosition();
   }, [getCurrentPosition]);
+
+  useEffect(() => {
+    if (searchPlace) {
+      const newCenter = { lat: searchPlace.lat, lng: searchPlace.lng };
+      setMapCenter(newCenter);
+      setMapLevel(3);
+    }
+  }, [searchPlace]);
 
   useEffect(() => {
     fetchAgenciesInBounds();
