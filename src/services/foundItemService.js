@@ -11,6 +11,11 @@ const foundItemService = {
     return response.data;
   },
 
+  getFoundItemDetail: async (id) => {
+    const response = await api.get(`/found-items/${id}`);
+    return response.data;
+  },
+
   getSampleItems: async () => {
     const response = await api.get("/found-items/samples");
     return response.data;

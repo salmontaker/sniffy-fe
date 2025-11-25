@@ -1,6 +1,6 @@
-import { Box, Card, CardContent, Container, Pagination, Stack, Typography } from "@mui/material";
+import { Box, Card, CardContent, Link, Pagination, Stack, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
 
 import EmptyData from "../components/common/EmptyData";
 import LoadingSpinner from "../components/common/LoadingSpinner";
@@ -58,50 +58,51 @@ function SearchPage() {
                 총 {totalElements.toLocaleString()}건의 검색 결과가 있어요.
               </Typography>
               {items.map((item) => (
-                <Card
-                  key={item.id}
-                  sx={{
-                    width: "100%",
-                    borderRadius: 3,
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                    "&:hover": { boxShadow: "0 4px 12px rgba(0,0,0,0.12)" }
-                  }}
-                >
-                  <CardContent sx={{ p: 3 }}>
-                    <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
-                      <Box
-                        sx={{
-                          width: 100,
-                          height: 100,
-                          borderRadius: 2,
-                          bgcolor: "grey.100",
-                          backgroundImage: item?.fdFilePathImg ? `url(${item.fdFilePathImg})` : "none",
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          flexShrink: 0
-                        }}
-                      />
-                      <Box sx={{ flex: 1 }}>
-                        <Typography variant="h6" fontWeight={600} noWrap>
-                          {item.fdPrdtNm}
-                        </Typography>
-                        <Box sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 0.5 }}>
-                          <Typography variant="body2" color="text.secondary">
-                            📁 {item.prdtClNm}
+                <Link component={RouterLink} to={`/item/${item.id}`} sx={{ textDecoration: "none" }} key={item.id}>
+                  <Card
+                    sx={{
+                      width: "100%",
+                      borderRadius: 3,
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                      "&:hover": { boxShadow: "0 4px 12px rgba(0,0,0,0.12)" }
+                    }}
+                  >
+                    <CardContent sx={{ p: 3 }}>
+                      <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
+                        <Box
+                          sx={{
+                            width: 100,
+                            height: 100,
+                            borderRadius: 2,
+                            bgcolor: "grey.100",
+                            backgroundImage: item?.fdFilePathImg ? `url(${item.fdFilePathImg})` : "none",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            flexShrink: 0
+                          }}
+                        />
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="h6" fontWeight={600} noWrap>
+                            {item.fdPrdtNm}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            🏛 {item.agencyName}
-                          </Typography>
-                          {item.fdYmd && (
+                          <Box sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 0.5 }}>
                             <Typography variant="body2" color="text.secondary">
-                              🗓 {item.fdYmd}
+                              📁 {item.prdtClNm}
                             </Typography>
-                          )}
+                            <Typography variant="body2" color="text.secondary">
+                              🏛 {item.agencyName}
+                            </Typography>
+                            {item.fdYmd && (
+                              <Typography variant="body2" color="text.secondary">
+                                🗓 {item.fdYmd}
+                              </Typography>
+                            )}
+                          </Box>
                         </Box>
                       </Box>
-                    </Box>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </Box>
           )}
