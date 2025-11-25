@@ -19,7 +19,7 @@ function LoginPage() {
 
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ username: "", password: "" });
   const [formErrors, setFormErrors] = useState({});
   const { execute: login, loading, error } = useApi(authService.login);
   const [rememberMe, setRememberMe] = useState(false);
@@ -42,10 +42,10 @@ function LoginPage() {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!form.email) {
-      newErrors.email = "이메일을 입력해주세요.";
-    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      newErrors.email = "유효한 이메일 주소를 입력해주세요.";
+    if (!form.username) {
+      newErrors.username = "아이디를 입력해주세요.";
+    } else if (!/^[a-zA-Z0-9]{4,}$/.test(form.username)) {
+      newErrors.username = "영문과 숫자만 사용 가능하며, 최소 4자 이상이어야 합니다.";
     }
 
     if (!form.password) {
@@ -65,8 +65,8 @@ function LoginPage() {
       return;
     }
 
-    const { email, password } = form;
-    const result = await login({ email, password });
+    const { username, password } = form;
+    const result = await login({ username, password });
     if (result) {
       const data = result.data;
 
@@ -109,17 +109,17 @@ function LoginPage() {
             }}
           >
             <TextField
-              id="email"
-              name="email"
-              type="email"
-              label="이메일 주소"
-              autoComplete="email"
+              id="username"
+              name="username"
+              type="text"
+              label="아이디"
+              autoComplete="username"
               required
               fullWidth
-              value={form.email}
+              value={form.username}
               onChange={handleChange}
-              error={!!formErrors.email}
-              helperText={formErrors.email}
+              error={!!formErrors.username}
+              helperText={formErrors.username}
             />
 
             <TextField

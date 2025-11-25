@@ -1,5 +1,5 @@
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import { Box, Button, Link, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Link, Paper, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
@@ -20,7 +20,7 @@ function RegisterPage() {
   const { execute: createUser, loading, error } = useApi(userService.createUser);
 
   const [form, setForm] = useState({
-    email: "",
+    username: "",
     password: "",
     passwordConfirm: "",
     nickname: ""
@@ -46,10 +46,10 @@ function RegisterPage() {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!form.email) {
-      newErrors.email = "이메일을 입력해주세요.";
-    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      newErrors.email = "유효한 이메일 주소를 입력해주세요.";
+    if (!form.username) {
+      newErrors.username = "아이디를 입력해주세요.";
+    } else if (!/^[a-zA-Z0-9]{4,}$/.test(form.username)) {
+      newErrors.username = "영문과 숫자만 사용 가능하며, 최소 4자 이상이어야 합니다.";
     }
 
     if (!form.password) {
@@ -79,9 +79,9 @@ function RegisterPage() {
       return;
     }
 
-    const { email, password, nickname } = form;
+    const { username, password, nickname } = form;
 
-    const result = await createUser({ email, password, nickname });
+    const result = await createUser({ username, password, nickname });
     if (result) {
       alert("회원가입에 성공했습니다.");
       navigate("/login");
@@ -109,17 +109,17 @@ function RegisterPage() {
 
           <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <TextField
-              id="email"
-              name="email"
-              type="email"
-              label="이메일 주소"
-              autoComplete="email"
+              id="username"
+              name="username"
+              type="text"
+              label="아이디"
+              autoComplete="username"
               required
               fullWidth
-              value={form.email}
+              value={form.username}
               onChange={handleChange}
-              error={!!formErrors.email}
-              helperText={formErrors.email || "비밀번호 변경시 사용됩니다."}
+              error={!!formErrors.username}
+              helperText={formErrors.username || "영문과 숫자만 사용 가능하며, 최소 4자 이상이어야 합니다."}
             />
 
             <TextField
