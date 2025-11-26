@@ -38,7 +38,7 @@ function App() {
 
       const result = await getCurrentUser();
       if (result) {
-        dispatch(loginAction(result));
+        dispatch(loginAction(result.data));
       }
     };
 
