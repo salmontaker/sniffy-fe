@@ -1,5 +1,5 @@
 import MyLocationIcon from "@mui/icons-material/MyLocation";
-import { Box, Fab, Typography } from "@mui/material";
+import { Box, CircularProgress, Fab, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Map, MapMarker, MarkerClusterer, useKakaoLoader } from "react-kakao-maps-sdk";
 
@@ -12,18 +12,29 @@ const DEFAULT_CENTER = { lat: 37.5666805, lng: 126.9784147 };
 const DEFAULT_LEVEL = 5;
 
 function KakaoMap({ searchPlace }) {
-  const [_, mapError] = useKakaoLoader({
+  const [_, kakaoMapError] = useKakaoLoader({
     appkey: import.meta.env.VITE_KAKAO_JS,
     libraries: ["services", "clusterer"]
   });
   const { execute: getAgencies } = useApi(agencyService.getAgencies);
-  const { coords, getCurrentPosition } = useGeolocation();
+  const { loading: geoLocationLoading, getCurrentPosition } = useGeolocation();
 
   const [map, setMap] = useState(null);
   const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
   const [mapLevel, setMapLevel] = useState(DEFAULT_LEVEL);
   const [agencies, setAgencies] = useState([]);
   const [selectedAgency, setSelectedAgency] = useState(null);
+
+  const fetchCurrentPostion = useCallback(() => {
+    getCurrentPosition()
+      .then((coords) => {
+        setMapCenter({ lat: coords.latitude, lng: coords.longitude });
+        setMapLevel(DEFAULT_LEVEL);
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  }, [getCurrentPosition]);
 
   const fetchAgenciesInBounds = useCallback(() => {
     if (!map) {
@@ -43,16 +54,8 @@ function KakaoMap({ searchPlace }) {
   };
 
   useEffect(() => {
-    if (!coords) {
-      return;
-    }
-    setMapCenter({ lat: coords.latitude, lng: coords.longitude });
-    setMapLevel(DEFAULT_LEVEL);
-  }, [coords]);
-
-  useEffect(() => {
-    getCurrentPosition();
-  }, [getCurrentPosition]);
+    fetchCurrentPostion();
+  }, [fetchCurrentPostion]);
 
   useEffect(() => {
     if (searchPlace) {
@@ -66,8 +69,8 @@ function KakaoMap({ searchPlace }) {
     fetchAgenciesInBounds();
   }, [mapCenter, mapLevel, fetchAgenciesInBounds]);
 
-  if (mapError) {
-    return <EmptyData message={mapError.message ?? "지도를 불러올 수 없습니다"} />;
+  if (kakaoMapError) {
+    return <EmptyData message={kakaoMapError.message ?? "지도를 불러올 수 없습니다"} />;
   }
 
   return (
@@ -106,7 +109,8 @@ function KakaoMap({ searchPlace }) {
 
       <Fab
         size="small"
-        onClick={getCurrentPosition}
+        onClick={fetchCurrentPostion}
+        disabled={geoLocationLoading}
         sx={{
           position: "absolute",
           bottom: 16,
@@ -119,10 +123,15 @@ function KakaoMap({ searchPlace }) {
           "&:hover": {
             bgcolor: "background.paper",
             filter: "brightness(0.8)"
+          },
+          "&.Mui-disabled": {
+            bgcolor: "background.paper",
+            filter: "brightness(0.8)",
+            opacity: 1
           }
         }}
       >
-        <MyLocationIcon />
+        {geoLocationLoading ? <CircularProgress size={20} thickness={3} /> : <MyLocationIcon />}
       </Fab>
     </Box>
   );
