@@ -1,5 +1,4 @@
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import { Alert, Box, Button, Link, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Link, Paper, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
@@ -17,7 +16,7 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  const { execute: createUser, loading, error } = useApi(userService.createUser);
+  const { execute: createUser, loading: createUserLoading } = useApi(userService.createUser);
 
   const [form, setForm] = useState({
     username: "",
@@ -79,12 +78,13 @@ function RegisterPage() {
       return;
     }
 
-    const { username, password, nickname } = form;
-
-    const result = await createUser({ username, password, nickname });
-    if (result) {
+    try {
+      const { username, password, nickname } = form;
+      await createUser({ username, password, nickname });
       alert("회원가입에 성공했습니다.");
       navigate("/login");
+    } catch (error) {
+      alert(error);
     }
   };
 
@@ -101,12 +101,6 @@ function RegisterPage() {
             bgcolor: "background.paper"
           }}
         >
-          {error && (
-            <Alert severity="error" icon={<WarningAmberIcon fontSize="inherit" />} sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-
           <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <TextField
               id="username"
@@ -166,13 +160,13 @@ function RegisterPage() {
 
             <Button
               type="submit"
-              disabled={loading}
+              disabled={createUserLoading}
               fullWidth
               variant="contained"
               color="primary"
               sx={{ py: 1.5, mt: 2 }}
             >
-              {loading ? "가입 처리 중..." : "회원가입"}
+              {createUserLoading ? "가입 처리 중..." : "회원가입"}
             </Button>
 
             <Typography variant="caption" color="text.secondary" align="center" sx={{ mt: 3 }}>

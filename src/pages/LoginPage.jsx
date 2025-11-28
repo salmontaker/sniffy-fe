@@ -21,7 +21,7 @@ function LoginPage() {
 
   const [form, setForm] = useState({ username: "", password: "" });
   const [formErrors, setFormErrors] = useState({});
-  const { execute: login, loading, error } = useApi(authService.login);
+  const { execute: login, loading: loginLoading } = useApi(authService.login);
   const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
@@ -66,17 +66,19 @@ function LoginPage() {
     }
 
     const { username, password } = form;
-    const result = await login({ username, password });
-    if (result) {
-      const data = result.data;
+
+    try {
+      const response = await login({ username, password });
+      const { token, user } = response.data;
 
       if (rememberMe) {
-        localStorage.setItem("accessToken", data.token);
+        localStorage.setItem("accessToken", token);
       } else {
-        sessionStorage.setItem("accessToken", data.token);
+        sessionStorage.setItem("accessToken", token);
       }
-
-      dispatch(loginAction(data.user));
+      dispatch(loginAction(user));
+    } catch (error) {
+      alert(error);
     }
   };
 
@@ -93,12 +95,6 @@ function LoginPage() {
             bgcolor: "background.paper"
           }}
         >
-          {error && (
-            <Alert severity="error" icon={<WarningAmberIcon fontSize="inherit" />} sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -159,8 +155,15 @@ function LoginPage() {
               </Link>
             </Box>
 
-            <Button type="submit" disabled={loading} fullWidth variant="contained" color="primary" sx={{ py: 1.5 }}>
-              {loading ? "로그인 중..." : "로그인"}
+            <Button
+              type="submit"
+              disabled={loginLoading}
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ py: 1.5 }}
+            >
+              {loginLoading ? "로그인 중..." : "로그인"}
             </Button>
           </Box>
         </Paper>

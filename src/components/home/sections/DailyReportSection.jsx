@@ -25,13 +25,12 @@ function DailyReportSection() {
   const [top5Categories, setTop5Categories] = useState([]);
 
   useEffect(() => {
-    getTop5Agencies().then((res) => {
-      setTop5Agencies(res.data);
-    });
-
-    getTop5Categories().then((res) => {
-      setTop5Categories(res.data);
-    });
+    getTop5Agencies()
+      .then((res) => setTop5Agencies(res.data))
+      .catch((err) => console.error(err));
+    getTop5Categories()
+      .then((res) => setTop5Categories(res.data))
+      .catch((err) => console.error(err));
   }, [getTop5Agencies, getTop5Categories]);
 
   return (

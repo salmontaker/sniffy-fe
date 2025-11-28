@@ -2,17 +2,20 @@ import { useCallback, useState } from "react";
 
 const useApi = (apiFunc) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const execute = useCallback(
     async (...args) => {
       try {
         setLoading(true);
-        setError(null);
         return await apiFunc(...args);
       } catch (err) {
-        setError(err.response?.data?.message);
-        return null;
+        const message = err.response?.data?.message || err.message || "요청 실패";
+
+        const newError = new Error(message);
+        newError.data = err.response?.data;
+        newError.status = err.response?.status;
+
+        throw newError;
       } finally {
         setLoading(false);
       }
@@ -20,7 +23,7 @@ const useApi = (apiFunc) => {
     [apiFunc]
   );
 
-  return { execute, loading, error };
+  return { execute, loading };
 };
 
 export default useApi;

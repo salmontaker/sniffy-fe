@@ -36,9 +36,11 @@ function App() {
         return;
       }
 
-      const result = await getCurrentUser();
-      if (result) {
+      try {
+        const result = await getCurrentUser();
         dispatch(loginAction(result.data));
+      } catch (err) {
+        console.error(err);
       }
     };
 

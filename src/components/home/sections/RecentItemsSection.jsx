@@ -12,9 +12,9 @@ function RecentItemsSection() {
   const [sampleItems, setSampleItems] = useState([]);
 
   useEffect(() => {
-    getSampleItems().then((res) => {
-      setSampleItems(res.data);
-    });
+    getSampleItems()
+      .then((res) => setSampleItems(res.data))
+      .catch((err) => console.error(err));
   }, [getSampleItems]);
 
   return (

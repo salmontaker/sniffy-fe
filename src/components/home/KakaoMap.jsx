@@ -25,28 +25,31 @@ function KakaoMap({ searchPlace }) {
   const [agencies, setAgencies] = useState([]);
   const [selectedAgency, setSelectedAgency] = useState(null);
 
-  const fetchCurrentPostion = useCallback(() => {
-    getCurrentPosition()
-      .then((coords) => {
-        setMapCenter({ lat: coords.latitude, lng: coords.longitude });
-        setMapLevel(DEFAULT_LEVEL);
-      })
-      .catch((err) => {
-        alert(err);
-      });
+  const fetchCurrentPosition = useCallback(async () => {
+    try {
+      const coords = await getCurrentPosition();
+      setMapCenter({ lat: coords.latitude, lng: coords.longitude });
+      setMapLevel(DEFAULT_LEVEL);
+    } catch (err) {
+      alert(err);
+    }
   }, [getCurrentPosition]);
 
-  const fetchAgenciesInBounds = useCallback(() => {
+  const fetchAgenciesInBounds = useCallback(async () => {
     if (!map) {
       return;
     }
+
     const bounds = map.getBounds();
     const sw = bounds.getSouthWest();
     const ne = bounds.getNorthEast();
 
-    getAgencies(sw.getLat(), ne.getLat(), sw.getLng(), ne.getLng()).then((res) => {
-      setAgencies(res.data);
-    });
+    try {
+      const response = await getAgencies(sw.getLat(), ne.getLat(), sw.getLng(), ne.getLng());
+      setAgencies(response.data);
+    } catch (err) {
+      console.error(err);
+    }
   }, [map, getAgencies]);
 
   const toggleAgencySelect = (agency) => {
@@ -54,8 +57,8 @@ function KakaoMap({ searchPlace }) {
   };
 
   useEffect(() => {
-    fetchCurrentPostion();
-  }, [fetchCurrentPostion]);
+    fetchCurrentPosition();
+  }, [fetchCurrentPosition]);
 
   useEffect(() => {
     if (searchPlace) {
@@ -109,7 +112,7 @@ function KakaoMap({ searchPlace }) {
 
       <Fab
         size="small"
-        onClick={fetchCurrentPostion}
+        onClick={fetchCurrentPosition}
         disabled={geoLocationLoading}
         sx={{
           position: "absolute",

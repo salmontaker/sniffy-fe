@@ -29,7 +29,7 @@ function HeaderActions() {
 
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const { mode, toggleTheme } = useThemeMode();
-  const { execute: logout } = useApi(authService.logout);
+  const { execute: logout, loading: logoutLoading } = useApi(authService.logout);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -44,11 +44,15 @@ function HeaderActions() {
 
   const handleLogout = async () => {
     if (isAuthenticated) {
-      await logout();
-
-      localStorage.removeItem("accessToken");
-      sessionStorage.removeItem("accessToken");
-      dispatch(logoutAction());
+      try {
+        await logout();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        localStorage.removeItem("accessToken");
+        sessionStorage.removeItem("accessToken");
+        dispatch(logoutAction());
+      }
     }
   };
 
@@ -93,7 +97,7 @@ function HeaderActions() {
               마이페이지
             </MenuItem>
             <Divider />
-            <MenuItem onClick={handleLogout}>
+            <MenuItem disabled={logoutLoading} onClick={handleLogout}>
               <ListItemIcon>
                 <LogoutIcon fontSize="small" />
               </ListItemIcon>

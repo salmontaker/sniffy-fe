@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, Link, Pagination, Stack, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 
 import EmptyData from "../components/common/EmptyData";
@@ -9,44 +9,48 @@ import useApi from "../hooks/useApi";
 import foundItemService from "../services/foundItemService";
 
 function SearchPage() {
-  const { execute: getFoundItems, loading } = useApi(foundItemService.getFoundItems);
+  const { execute: getFoundItems, loading: foundItemsLoading } = useApi(foundItemService.getFoundItems);
   const [searchParams, setSearchParams] = useSearchParams();
+  const page = Number(searchParams.get("page")) || 1;
 
   const [items, setItems] = useState([]);
-  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
 
-  // URL 파라미터를 객체로 변환 (폼 초기값 및 API 요청용)
-  const currentParams = useMemo(() => Object.fromEntries(searchParams), [searchParams]);
-
   useEffect(() => {
-    const nextPage = Math.max(Number(currentParams.page) || 1, 1);
-    setPage(nextPage);
+    const params = Object.fromEntries(searchParams);
 
-    getFoundItems(currentParams, nextPage).then((res) => {
-      const data = res.data;
-      setItems(data.content);
-      setTotalPages(data.totalPages);
-      setTotalElements(data.totalElements);
-    });
-  }, [searchParams, getFoundItems]);
+    const fetchFoundItems = async () => {
+      try {
+        const response = await getFoundItems(params, page);
+        const { content, totalPages, totalElements } = response.data;
+
+        setItems(content);
+        setTotalPages(totalPages);
+        setTotalElements(totalElements);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchFoundItems();
+  }, [searchParams, getFoundItems, page]);
 
   const handleSearchSubmit = (newParams) => {
     setSearchParams({ ...newParams, page: "1" });
   };
 
   const handlePageChange = (_, value) => {
-    setSearchParams({ ...currentParams, page: String(value) });
+    setSearchParams({ ...Object.fromEntries(searchParams), page: String(value) });
   };
 
   return (
     <>
       <Box mb={4}>
-        <ItemSearchForm initialValues={currentParams} onSubmit={handleSearchSubmit} />
+        <ItemSearchForm initialValues={Object.fromEntries(searchParams)} onSubmit={handleSearchSubmit} />
       </Box>
 
-      {loading ? (
+      {foundItemsLoading ? (
         <LoadingSpinner />
       ) : (
         <>

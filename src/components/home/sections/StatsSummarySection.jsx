@@ -11,9 +11,9 @@ function StatsSummarySection() {
   const [foundItemTotals, setFoundItemTotals] = useState(null);
 
   useEffect(() => {
-    getFoundItemTotals().then((res) => {
-      setFoundItemTotals({ ...res.data });
-    });
+    getFoundItemTotals()
+      .then((res) => setFoundItemTotals({ ...res.data }))
+      .catch((err) => console.error(err));
   }, [getFoundItemTotals]);
 
   return (

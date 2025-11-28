@@ -9,25 +9,19 @@ import foundItemService from "../services/foundItemService";
 
 function ItemDetailPage() {
   const { id } = useParams();
-  const { execute: getFoundItemDetail, loading, error } = useApi(foundItemService.getFoundItemDetail);
+  const { execute: getFoundItemDetail, loading: foundItemDetailLoading } = useApi(foundItemService.getFoundItemDetail);
   const [item, setItem] = useState(null);
 
   useEffect(() => {
-    const fetchItemDetail = async () => {
-      getFoundItemDetail(id).then((res) => setItem(res.data));
-    };
-
     if (id) {
-      fetchItemDetail();
+      getFoundItemDetail(id)
+        .then((res) => setItem(res.data))
+        .catch((err) => console.error(err));
     }
   }, [id, getFoundItemDetail]);
 
-  if (loading) {
+  if (foundItemDetailLoading) {
     return <LoadingSpinner />;
-  }
-
-  if (error) {
-    return <EmptyData message={`Error: ${error.message || "상세 정보를 불러오는 데 실패했습니다."}`} />;
   }
 
   if (!item) {
