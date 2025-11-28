@@ -11,6 +11,16 @@ const agencyService = {
       }
     });
     return response.data;
+  },
+
+  addFavorite: async (id) => {
+    const response = await api.post(`/agencies/favorites/${id}`);
+    return response.data;
+  },
+
+  removeFavorite: async (id) => {
+    const response = await api.delete(`/agencies/favorites/${id}`);
+    return response.data;
   }
 };
 

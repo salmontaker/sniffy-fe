@@ -1,10 +1,14 @@
 import MyLocationIcon from "@mui/icons-material/MyLocation";
-import { Box, CircularProgress, Fab, Typography } from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import { Box, CircularProgress, Fab, IconButton, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Map, MapMarker, MarkerClusterer, useKakaoLoader } from "react-kakao-maps-sdk";
+import { useSelector } from "react-redux";
 
 import useApi from "../../hooks/useApi";
 import useGeolocation from "../../hooks/useGeolocation";
+import { selectIsAuthenticated } from "../../redux/authSlice";
 import agencyService from "../../services/agencyService";
 import EmptyData from "./../common/EmptyData";
 
@@ -17,7 +21,10 @@ function KakaoMap({ searchPlace }) {
     libraries: ["services", "clusterer"]
   });
   const { execute: getAgencies } = useApi(agencyService.getAgencies);
+  const { execute: addFavorite, loading: addFavoriteLoading } = useApi(agencyService.addFavorite);
+  const { execute: removeFavorite, loading: removeFavoriteLoading } = useApi(agencyService.removeFavorite);
   const { loading: geoLocationLoading, getCurrentPosition } = useGeolocation();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   const [map, setMap] = useState(null);
   const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
@@ -54,6 +61,26 @@ function KakaoMap({ searchPlace }) {
 
   const toggleAgencySelect = (agency) => {
     setSelectedAgency((prev) => (prev?.id === agency.id ? null : agency));
+  };
+
+  const handleToggleFavorite = async (agency) => {
+    if (!isAuthenticated) {
+      alert("로그인이 필요한 기능입니다.");
+      return;
+    }
+
+    try {
+      if (agency.isFavorite) {
+        await removeFavorite(agency.id);
+      } else {
+        await addFavorite(agency.id);
+      }
+
+      fetchAgenciesInBounds();
+    } catch (error) {
+      console.error("즐겨찾기 처리 중 오류:", error);
+      alert("즐겨찾기 처리에 실패했습니다.");
+    }
   };
 
   useEffect(() => {
@@ -101,8 +128,29 @@ function KakaoMap({ searchPlace }) {
               onClick={() => toggleAgencySelect(agency)}
             >
               {agency.id === selectedAgency?.id && (
-                <Box component="div">
-                  <Typography>{agency.name}</Typography>
+                <Box component="div" sx={{ p: 1, minWidth: 200 }}>
+                  <Typography variant="subtitle2" fontWeight="bold">
+                    {agency.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    {agency.address}
+                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Typography variant="body2" color="text.secondary">
+                      {agency.phone}
+                    </Typography>
+                    <IconButton
+                      disabled={addFavoriteLoading || removeFavoriteLoading}
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleFavorite(agency);
+                      }}
+                      sx={{ color: agency.isFavorite ? "warning.main" : "text.secondary" }}
+                    >
+                      {agency.isFavorite ? <StarIcon /> : <StarBorderIcon />}
+                    </IconButton>
+                  </Box>
                 </Box>
               )}
             </MapMarker>
