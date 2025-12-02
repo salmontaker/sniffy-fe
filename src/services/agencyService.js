@@ -13,6 +13,11 @@ const agencyService = {
     return response.data;
   },
 
+  getFavoriteAgencies: async (page, size) => {
+    const response = await api.get("/agencies/favorites", { params: { page, size } });
+    return response.data;
+  },
+
   addFavorite: async (id) => {
     const response = await api.post(`/agencies/favorites/${id}`);
     return response.data;

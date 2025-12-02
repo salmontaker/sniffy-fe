@@ -1,8 +1,10 @@
 import { Route } from "react-router-dom";
 
+import ProtectedRoute from "../components/ProtectedRoute";
 import HomePage from "../pages/HomePage";
 import ItemDetailPage from "../pages/ItemDetailPage";
 import LoginPage from "../pages/LoginPage";
+import MyPage from "../pages/MyPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import RegisterPage from "../pages/RegisterPage";
 import SearchPage from "../pages/SearchPage";
@@ -16,6 +18,10 @@ export const appRoutes = () => {
       <Route path="/search" element={<SearchPage />} />
       <Route path="/item/:id" element={<ItemDetailPage />} />
       <Route path="*" element={<NotFoundPage />} />
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="/mypage" element={<MyPage />} />
+      </Route>
     </>
   );
 };
