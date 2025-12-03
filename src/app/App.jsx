@@ -7,12 +7,15 @@ import { Routes } from "react-router-dom";
 import Layout from "../components/Layout";
 import useApi from "../hooks/useApi";
 import useThemeMode from "../hooks/useThemeMode";
-import { loginAction } from "../redux/authSlice";
+import { setUser } from "../redux/authSlice";
+import authService from "../services/authService";
 import userService from "../services/userService";
+import tokenManager from "../utils/tokenManager";
 import { appRoutes } from "./routes";
 
 function App() {
   const dispatch = useDispatch();
+  const { execute: refresh } = useApi(authService.refresh);
   const { execute: getCurrentUser } = useApi(userService.getCurrentUser);
   const { mode } = useThemeMode();
 
@@ -30,22 +33,25 @@ function App() {
   }, [mode]);
 
   useEffect(() => {
-    const verifyToken = async () => {
-      const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
-      if (!token) {
+    const init = async () => {
+      if (!tokenManager.isRefreshRequired()) {
         return;
       }
 
       try {
-        const result = await getCurrentUser();
-        dispatch(loginAction(result.data));
+        const refreshRes = await refresh();
+        tokenManager.setToken(refreshRes.data.accessToken);
+
+        const userRes = await getCurrentUser();
+        dispatch(setUser(userRes.data));
       } catch (err) {
+        tokenManager.logout();
         console.error(err);
       }
     };
 
-    verifyToken();
-  }, [dispatch, getCurrentUser]);
+    init();
+  }, [dispatch, refresh, getCurrentUser]);
 
   return (
     <ThemeProvider theme={theme}>

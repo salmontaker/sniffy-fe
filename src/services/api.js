@@ -1,24 +1,36 @@
 import axios, { HttpStatusCode } from "axios";
 
+import tokenManager from "../utils/tokenManager";
+
 const baseURL = import.meta.env.VITE_API_URL ?? "http://localhost:8080/api";
 
 const api = axios.create({
-  baseURL: baseURL
+  baseURL: baseURL,
+  withCredentials: true
 });
+
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+const addRefreshSubscriber = (callback) => {
+  refreshSubscribers.push(callback);
+};
+
+const onRefreshed = (accessToken) => {
+  refreshSubscribers.forEach((callback) => callback(accessToken));
+  refreshSubscribers = [];
+};
 
 // 요청 인터셉터
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const accessToken = tokenManager.getToken();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // 응답 인터셉터
@@ -26,16 +38,41 @@ api.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
-    const status = error.response?.status;
+  async (error) => {
+    const { config, response } = error;
+    const status = response?.status;
 
-    // 인증 실패시 토큰 폐기
-    if (status === HttpStatusCode.Unauthorized) {
-      localStorage.removeItem("accessToken");
-      sessionStorage.removeItem("accessToken");
+    if (status !== HttpStatusCode.Unauthorized || config.url.includes("/auth/refresh")) {
+      return Promise.reject(error);
     }
 
-    return Promise.reject(error);
+    if (isRefreshing) {
+      // 새로운 Promise를 만들어 대기열에 등록하고 리턴 (여기서 멈춤)
+      return new Promise((resolve) => {
+        addRefreshSubscriber((token) => {
+          config.headers.Authorization = `Bearer ${token}`;
+          resolve(api(config)); // 새 토큰으로 재요청 후 그 결과를 resolve
+        });
+      });
+    }
+
+    isRefreshing = true;
+
+    try {
+      const response = await api.post("/auth/refresh");
+      const { accessToken } = response.data.data.accessToken;
+
+      tokenManager.setToken(accessToken);
+      onRefreshed(accessToken);
+
+      config.headers.Authorization = `Bearer ${accessToken}`;
+      return api(config);
+    } catch (refreshError) {
+      tokenManager.logout();
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
+    }
   }
 );
 

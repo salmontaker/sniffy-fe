@@ -3,18 +3,18 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import PersonIcon from "@mui/icons-material/Person";
 import StarIcon from "@mui/icons-material/Star";
 import { Avatar, Box, Button, Card, CardContent, Divider, Tab, Tabs, Typography } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import useApi from "../../hooks/useApi";
-import { logoutAction, selectAuthUser } from "../../redux/authSlice";
+import { selectAuthUser } from "../../redux/authSlice";
 import userService from "../../services/userService";
+import tokenManager from "../../utils/tokenManager";
 
 export const TAB_PROFILE = "profile";
 export const TAB_NOTIFICATIONS = "notifications";
 export const TAB_FAVORITES = "favorites";
 
 function MyPageSidebar({ activeTab, onTabChange }) {
-  const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
   const { execute: deleteUser, loading: deleteLoading } = useApi(userService.deleteUser);
 
@@ -26,10 +26,7 @@ function MyPageSidebar({ activeTab, onTabChange }) {
     if (confirm("정말로 탈퇴하실 건가요?")) {
       try {
         await deleteUser(user.id);
-        localStorage.removeItem("accessToken");
-        sessionStorage.removeItem("accessToken");
-        dispatch(logoutAction());
-
+        tokenManager.logout();
         alert("회원탈퇴가 완료되었습니다.");
       } catch (error) {
         alert(error);

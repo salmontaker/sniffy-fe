@@ -1,14 +1,15 @@
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import { Alert, Box, Button, Checkbox, FormControlLabel, Link, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Paper, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import AuthFormContainer from "../components/auth/AuthFormContainer";
 import AuthFormHeader from "../components/auth/AuthFormHeader";
 import useApi from "../hooks/useApi";
-import { loginAction, selectIsAuthenticated } from "../redux/authSlice";
+import { selectIsAuthenticated, setUser } from "../redux/authSlice";
 import authService from "../services/authService";
+import userService from "../services/userService";
+import tokenManager from "../utils/tokenManager";
 
 function LoginPage() {
   const [searchParams] = useSearchParams();
@@ -22,7 +23,7 @@ function LoginPage() {
   const [form, setForm] = useState({ username: "", password: "" });
   const [formErrors, setFormErrors] = useState({});
   const { execute: login, loading: loginLoading } = useApi(authService.login);
-  const [rememberMe, setRememberMe] = useState(false);
+  const { execute: getCurrentUser, loading: userLoading } = useApi(userService.getCurrentUser);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -68,15 +69,11 @@ function LoginPage() {
     const { username, password } = form;
 
     try {
-      const response = await login({ username, password });
-      const { token, user } = response.data;
+      const loginRes = await login({ username, password });
+      tokenManager.setToken(loginRes.data.accessToken);
 
-      if (rememberMe) {
-        localStorage.setItem("accessToken", token);
-      } else {
-        sessionStorage.setItem("accessToken", token);
-      }
-      dispatch(loginAction(user));
+      const userRes = await getCurrentUser();
+      dispatch(setUser(userRes.data));
     } catch (error) {
       alert(error);
     }
@@ -132,38 +129,15 @@ function LoginPage() {
               helperText={formErrors.password}
             />
 
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    id="remember-me"
-                    name="remember-me"
-                    color="primary"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                  />
-                }
-                label={
-                  <Typography variant="body2" color="text.secondary">
-                    로그인 상태 유지
-                  </Typography>
-                }
-              />
-
-              <Link component={RouterLink} to="#" variant="body2" color="primary" underline="hover">
-                비밀번호를 잊으셨나요?
-              </Link>
-            </Box>
-
             <Button
               type="submit"
-              disabled={loginLoading}
+              disabled={loginLoading || userLoading}
               fullWidth
               variant="contained"
               color="primary"
               sx={{ py: 1.5 }}
             >
-              {loginLoading ? "로그인 중..." : "로그인"}
+              {loginLoading || userLoading ? "로그인 중..." : "로그인"}
             </Button>
           </Box>
         </Paper>

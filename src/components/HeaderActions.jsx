@@ -16,17 +16,16 @@ import {
   Tooltip
 } from "@mui/material";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 
 import useApi from "../hooks/useApi";
 import useThemeMode from "../hooks/useThemeMode";
-import { logoutAction, selectIsAuthenticated } from "../redux/authSlice";
+import { selectIsAuthenticated } from "../redux/authSlice";
 import authService from "../services/authService";
+import tokenManager from "../utils/tokenManager";
 
 function HeaderActions() {
-  const dispatch = useDispatch();
-
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const { mode, toggleTheme } = useThemeMode();
   const { execute: logout, loading: logoutLoading } = useApi(authService.logout);
@@ -49,9 +48,7 @@ function HeaderActions() {
       } catch (err) {
         console.error(err);
       } finally {
-        localStorage.removeItem("accessToken");
-        sessionStorage.removeItem("accessToken");
-        dispatch(logoutAction());
+        tokenManager.logout();
       }
     }
   };

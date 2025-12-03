@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import useApi from "../../hooks/useApi";
-import { loginAction, selectAuthUser } from "../../redux/authSlice";
+import { selectAuthUser, setUser } from "../../redux/authSlice";
 import userService from "../../services/userService";
 
 function ProfileSettings() {
@@ -58,11 +58,15 @@ function ProfileSettings() {
     // 값이 있는 항목만 필터링
     const validData = Object.fromEntries(Object.entries(form).filter(([_, value]) => !!value));
 
-    const result = await updateUser(validData);
-    if (result) {
+    try {
+      const response = await updateUser(validData);
+      const user = response.data;
+
       alert("회원정보가 수정되었습니다.");
-      dispatch(loginAction(result.data));
-      setForm({ nickname: result.data.nickname || "", password: "", passwordConfirm: "" });
+      dispatch(setUser(user));
+      setForm({ nickname: user.nickname || "", password: "", passwordConfirm: "" });
+    } catch (err) {
+      alert(err);
     }
   };
 
