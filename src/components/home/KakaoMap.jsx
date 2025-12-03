@@ -84,10 +84,6 @@ function KakaoMap({ searchPlace }) {
   };
 
   useEffect(() => {
-    fetchCurrentPosition();
-  }, [fetchCurrentPosition]);
-
-  useEffect(() => {
     if (searchPlace) {
       const newCenter = { lat: searchPlace.lat, lng: searchPlace.lng };
       setMapCenter(newCenter);
