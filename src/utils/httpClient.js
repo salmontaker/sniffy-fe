@@ -1,10 +1,10 @@
 import axios, { HttpStatusCode } from "axios";
 
-import tokenManager from "../utils/tokenManager";
+import tokenManager from "./tokenManager";
 
 const baseURL = import.meta.env.VITE_API_URL ?? "http://localhost:8080/api";
 
-const api = axios.create({
+const httpClient = axios.create({
   baseURL: baseURL,
   withCredentials: true
 });
@@ -22,7 +22,7 @@ const onRefreshed = (accessToken) => {
 };
 
 // 요청 인터셉터
-api.interceptors.request.use(
+httpClient.interceptors.request.use(
   (config) => {
     const accessToken = tokenManager.getToken();
     if (accessToken) {
@@ -34,7 +34,7 @@ api.interceptors.request.use(
 );
 
 // 응답 인터셉터
-api.interceptors.response.use(
+httpClient.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -51,7 +51,7 @@ api.interceptors.response.use(
       return new Promise((resolve) => {
         addRefreshSubscriber((token) => {
           config.headers.Authorization = `Bearer ${token}`;
-          resolve(api(config)); // 새 토큰으로 재요청 후 그 결과를 resolve
+          resolve(httpClient(config)); // 새 토큰으로 재요청 후 그 결과를 resolve
         });
       });
     }
@@ -59,14 +59,14 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const response = await api.post("/auth/refresh");
+      const response = await httpClient.post("/auth/refresh");
       const { accessToken } = response.data.data.accessToken;
 
       tokenManager.setToken(accessToken);
       onRefreshed(accessToken);
 
       config.headers.Authorization = `Bearer ${accessToken}`;
-      return api(config);
+      return httpClient(config);
     } catch (refreshError) {
       tokenManager.logout();
       return Promise.reject(refreshError);
@@ -76,4 +76,4 @@ api.interceptors.response.use(
   }
 );
 
-export default api;
+export default httpClient;

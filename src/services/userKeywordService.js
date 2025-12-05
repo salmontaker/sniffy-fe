@@ -1,23 +1,23 @@
-import api from "./api";
+import httpClient from "../utils/httpClient";
 
 const userKeywordService = {
   getKeywords: async () => {
-    const response = await api.get("/keywords");
+    const response = await httpClient.get("/keywords");
     return response.data;
   },
 
   createKeyword: async (keyword) => {
-    const response = await api.post("/keywords", { keyword });
+    const response = await httpClient.post("/keywords", { keyword });
     return response.data;
   },
 
   updateKeyword: async (keywordId) => {
-    const response = await api.put(`/keywords/${keywordId}`);
+    const response = await httpClient.put(`/keywords/${keywordId}`);
     return response.data;
   },
 
   deleteKeyword: async (keywordId) => {
-    const response = await api.delete(`/keywords/${keywordId}`);
+    const response = await httpClient.delete(`/keywords/${keywordId}`);
     return response.data;
   }
 };

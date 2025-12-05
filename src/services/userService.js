@@ -1,28 +1,28 @@
-import api from "./api";
+import httpClient from "../utils/httpClient";
 
 const userService = {
   getUser: async (userId) => {
-    const response = await api.get(`/users/${userId}`);
+    const response = await httpClient.get(`/users/${userId}`);
     return response.data;
   },
 
   getCurrentUser: async () => {
-    const response = await api.get("/users/me");
+    const response = await httpClient.get("/users/me");
     return response.data;
   },
 
   createUser: async (userData) => {
-    const response = await api.post("/users", userData);
+    const response = await httpClient.post("/users", userData);
     return response.data;
   },
 
   updateUser: async (userData) => {
-    const response = await api.put("/users", userData);
+    const response = await httpClient.put("/users", userData);
     return response.data;
   },
 
   deleteUser: async () => {
-    const response = await api.delete("/users");
+    const response = await httpClient.delete("/users");
     return response.data;
   }
 };

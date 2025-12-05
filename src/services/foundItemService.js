@@ -1,8 +1,8 @@
-import api from "./api";
+import httpClient from "../utils/httpClient";
 
 const foundItemService = {
   getFoundItems: async (searchParams, page) => {
-    const response = await api.get("/found-items", {
+    const response = await httpClient.get("/found-items", {
       params: {
         ...searchParams,
         page
@@ -12,12 +12,12 @@ const foundItemService = {
   },
 
   getFoundItemDetail: async (id) => {
-    const response = await api.get(`/found-items/${id}`);
+    const response = await httpClient.get(`/found-items/${id}`);
     return response.data;
   },
 
   getSampleItems: async () => {
-    const response = await api.get("/found-items/samples");
+    const response = await httpClient.get("/found-items/samples");
     return response.data;
   }
 };

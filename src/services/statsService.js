@@ -1,18 +1,18 @@
-import api from "./api";
+import httpClient from "../utils/httpClient";
 
 const statsService = {
   getFoundItemTotals: async () => {
-    const response = await api.get("/stats/found-items");
+    const response = await httpClient.get("/stats/found-items");
     return response.data;
   },
 
   getTop5Agencies: async () => {
-    const response = await api.get("/stats/top5-agencies");
+    const response = await httpClient.get("/stats/top5-agencies");
     return response.data;
   },
 
   getTop5Categories: async () => {
-    const response = await api.get("/stats/top5-categories");
+    const response = await httpClient.get("/stats/top5-categories");
     return response.data;
   }
 };
