@@ -33,7 +33,7 @@ function RecentItemsSection() {
             <Grid container spacing={2}>
               {sampleItems.map((item) => (
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.id}>
-                  <Link component={RouterLink} to={`/item/${item.id}`} sx={{ textDecoration: "none" }}>
+                  <Link component={RouterLink} to={`/items/${item.id}`} sx={{ textDecoration: "none" }}>
                     <Card
                       sx={{
                         height: "100%",

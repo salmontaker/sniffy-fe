@@ -17,7 +17,7 @@ export const appRoutes = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/search" element={<SearchPage />} />
-      <Route path="/item/:id" element={<ItemDetailPage />} />
+      <Route path="/items/:id" element={<ItemDetailPage />} />
       <Route path="*" element={<NotFoundPage />} />
 
       <Route element={<ProtectedRoute />}>

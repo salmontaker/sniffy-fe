@@ -62,7 +62,7 @@ function SearchPage() {
                 총 {totalElements.toLocaleString()}건의 검색 결과가 있어요.
               </Typography>
               {items.map((item) => (
-                <Link component={RouterLink} to={`/item/${item.id}`} sx={{ textDecoration: "none" }} key={item.id}>
+                <Link component={RouterLink} to={`/items/${item.id}`} sx={{ textDecoration: "none" }} key={item.id}>
                   <Card
                     sx={{
                       width: "100%",
