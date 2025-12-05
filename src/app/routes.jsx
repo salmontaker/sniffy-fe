@@ -6,6 +6,7 @@ import ItemDetailPage from "../pages/ItemDetailPage";
 import LoginPage from "../pages/LoginPage";
 import MyPage from "../pages/MyPage";
 import NotFoundPage from "../pages/NotFoundPage";
+import NoticePage from "../pages/NoticePage";
 import RegisterPage from "../pages/RegisterPage";
 import SearchPage from "../pages/SearchPage";
 
@@ -20,6 +21,7 @@ export const appRoutes = () => {
       <Route path="*" element={<NotFoundPage />} />
 
       <Route element={<ProtectedRoute />}>
+        <Route path="/notices" element={<NoticePage />} />
         <Route path="/mypage" element={<MyPage />} />
       </Route>
     </>
