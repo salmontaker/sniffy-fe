@@ -13,7 +13,7 @@ const agencyService = {
     return response.data;
   },
 
-  getFavoriteAgencies: async (page, size) => {
+  getFavoriteAgencies: async (page = 1, size = 3) => {
     const response = await api.get("/agencies/favorites", { params: { page, size } });
     return response.data;
   },

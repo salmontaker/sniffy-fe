@@ -9,8 +9,6 @@ import useApi from "../../hooks/useApi";
 import agencyService from "../../services/agencyService";
 import LoadingSpinner from "../common/LoadingSpinner";
 
-const DEFAULT_SIZE = 3;
-
 function FavoriteAgencies() {
   const { execute: getFavoriteAgencies, loading: favoriteAgenciesLoading } = useApi(agencyService.getFavoriteAgencies);
   const { execute: removeFavorite, loading: removeFavoriteLoading } = useApi(agencyService.removeFavorite);
@@ -21,7 +19,7 @@ function FavoriteAgencies() {
 
   const fetchFavoriteAgencies = useCallback(async () => {
     try {
-      const response = await getFavoriteAgencies(page, DEFAULT_SIZE);
+      const response = await getFavoriteAgencies(page);
       const { content, totalPages } = response.data;
 
       setFavoriteAgencies(content);
