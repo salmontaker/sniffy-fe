@@ -105,7 +105,7 @@ function FavoriteAgencies() {
                       <Box display="flex" alignItems="center" gap={1}>
                         <PhoneIcon sx={{ fontSize: 16, color: "text.secondary" }} />
                         <Typography variant="body2" color="text.secondary">
-                          {agency.telNo}
+                          {agency.tel}
                         </Typography>
                       </Box>
                     </Box>
