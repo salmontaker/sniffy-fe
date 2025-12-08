@@ -1,9 +1,9 @@
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import { Box, CircularProgress, Fab, IconButton, Typography } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
-import { Map, MapMarker, MarkerClusterer, useKakaoLoader } from "react-kakao-maps-sdk";
+import { Box, Card, CircularProgress, Fab, IconButton, Typography } from "@mui/material";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { CustomOverlayMap, Map, MapMarker, MarkerClusterer, useKakaoLoader } from "react-kakao-maps-sdk";
 import { useSelector } from "react-redux";
 
 import useApi from "../../hooks/useApi";
@@ -30,7 +30,11 @@ function KakaoMap({ searchPlace }) {
   const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
   const [mapLevel, setMapLevel] = useState(DEFAULT_LEVEL);
   const [agencies, setAgencies] = useState([]);
-  const [selectedAgency, setSelectedAgency] = useState(null);
+
+  const [selectedAgencyId, setSelectedAgencyId] = useState(null);
+  const selectedAgency = useMemo(() => {
+    return agencies.find((a) => a.id === selectedAgencyId) || null;
+  }, [agencies, selectedAgencyId]);
 
   const fetchCurrentPosition = useCallback(async () => {
     try {
@@ -59,8 +63,8 @@ function KakaoMap({ searchPlace }) {
     }
   }, [map, getAgencies]);
 
-  const toggleAgencySelect = (agency) => {
-    setSelectedAgency((prev) => (prev?.id === agency.id ? null : agency));
+  const handleAgencySelect = (agency) => {
+    setSelectedAgencyId((prevId) => (prevId === agency.id ? null : agency.id));
   };
 
   const handleToggleFavorite = async (agency) => {
@@ -105,6 +109,7 @@ function KakaoMap({ searchPlace }) {
         style={{ width: "100%", height: "100%" }}
         center={mapCenter}
         level={mapLevel}
+        onClick={() => setSelectedAgencyId(null)}
         onCreate={setMap}
         onDragEnd={(target) => {
           const center = target.getCenter();
@@ -112,7 +117,22 @@ function KakaoMap({ searchPlace }) {
         }}
         onZoomChanged={(target) => setMapLevel(target.getLevel())}
       >
-        <MarkerClusterer averageCenter={true} minLevel={DEFAULT_LEVEL}>
+        <MarkerClusterer
+          averageCenter={true}
+          minLevel={DEFAULT_LEVEL}
+          styles={[
+            {
+              width: "40px",
+              height: "40px",
+              textAlign: "center",
+              alignContent: "center",
+              borderRadius: "50%",
+              background: "rgba(33, 150, 243, 0.7)"
+            },
+            { background: "rgba(165, 214, 167, 0.7)" },
+            { background: "rgba(254, 251, 61, 0.7)" }
+          ]}
+        >
           {agencies.map((agency) => (
             <MapMarker
               key={agency.id}
@@ -120,38 +140,51 @@ function KakaoMap({ searchPlace }) {
                 lat: agency.latitude,
                 lng: agency.longitude
               }}
+              image={{
+                src: `${agency.isFavorite ? "/marker_favorite.svg" : "/marker_normal.svg"}`,
+                size: { width: 48, height: 48 },
+                options: {
+                  offset: {
+                    x: 22,
+                    y: 40
+                  }
+                }
+              }}
               clickable={true}
-              onClick={() => toggleAgencySelect(agency)}
-            >
-              {agency.id === selectedAgency?.id && (
-                <Box component="div" sx={{ p: 1, minWidth: 200 }}>
-                  <Typography variant="subtitle2" fontWeight="bold">
-                    {agency.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                    {agency.address}
-                  </Typography>
-                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <Typography variant="body2" color="text.secondary">
-                      {agency.phone}
-                    </Typography>
-                    <IconButton
-                      disabled={addFavoriteLoading || removeFavoriteLoading}
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleFavorite(agency);
-                      }}
-                      sx={{ color: agency.isFavorite ? "warning.main" : "text.secondary" }}
-                    >
-                      {agency.isFavorite ? <StarIcon /> : <StarBorderIcon />}
-                    </IconButton>
-                  </Box>
-                </Box>
-              )}
-            </MapMarker>
+              onClick={() => handleAgencySelect(agency)}
+            />
           ))}
         </MarkerClusterer>
+        {selectedAgency && (
+          <CustomOverlayMap
+            position={{ lat: selectedAgency.latitude, lng: selectedAgency.longitude }}
+            yAnchor={1.4}
+            zIndex={1}
+            clickable={true}
+          >
+            <Box component={Card} p={1} minWidth={200} bgcolor="background.paper">
+              <Typography variant="subtitle1" fontWeight="bold">
+                {selectedAgency.name}
+              </Typography>
+              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+                {selectedAgency.address}
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <Typography variant="subtitle2" color="text.secondary">
+                  {selectedAgency.tel}
+                </Typography>
+                <IconButton
+                  disabled={addFavoriteLoading || removeFavoriteLoading}
+                  size="small"
+                  onClick={() => handleToggleFavorite(selectedAgency)}
+                  sx={{ color: selectedAgency.isFavorite ? "warning.main" : "text.secondary" }}
+                >
+                  {selectedAgency.isFavorite ? <StarIcon /> : <StarBorderIcon />}
+                </IconButton>
+              </Box>
+            </Box>
+          </CustomOverlayMap>
+        )}
       </Map>
 
       <Fab
