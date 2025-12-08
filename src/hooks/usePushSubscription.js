@@ -10,7 +10,7 @@ const usePushSubscription = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   const doSubscribe = async () => {
-    const reg = await navigator.serviceWorker.register("/sw.js");
+    const reg = await navigator.serviceWorker.ready;
     const sub = await reg.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(import.meta.env.VITE_VAPID_KEY)
@@ -26,7 +26,7 @@ const usePushSubscription = () => {
   };
 
   const doUnsubscribe = async () => {
-    const reg = await navigator.serviceWorker.register("/sw.js");
+    const reg = await navigator.serviceWorker.ready;
     const sub = await reg.pushManager.getSubscription();
 
     if (!sub) {
@@ -43,7 +43,7 @@ const usePushSubscription = () => {
 
   useEffect(() => {
     const checkSubscription = async () => {
-      const reg = await navigator.serviceWorker.register("/sw.js");
+      const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.getSubscription();
       setIsSubscribed(!!sub);
     };

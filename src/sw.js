@@ -10,7 +10,8 @@ self.addEventListener("push", (event) => {
   const msg = event.data ? event.data.text() : "내용 없음";
   event.waitUntil(
     self.registration.showNotification("키워드 알림", {
-      body: msg
+      body: msg,
+      icon: "/favicon-192x192.png"
     })
   );
 });
@@ -19,3 +20,5 @@ self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   event.waitUntil(self.clients.openWindow(self.location.origin + "/notices"));
 });
+
+self.addEventListener("fetch", () => {});
