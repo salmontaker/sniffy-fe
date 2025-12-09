@@ -42,7 +42,11 @@ httpClient.interceptors.response.use(
     const { config, response } = error;
     const status = response?.status;
 
-    if (status !== HttpStatusCode.Unauthorized || config.url.includes("/auth/refresh")) {
+    if (
+      status !== HttpStatusCode.Unauthorized ||
+      config.url.includes("/auth/login") ||
+      config.url.includes("/auth/refresh")
+    ) {
       return Promise.reject(error);
     }
 
