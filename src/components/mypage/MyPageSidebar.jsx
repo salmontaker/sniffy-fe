@@ -6,6 +6,7 @@ import { Avatar, Box, Button, Card, CardContent, Divider, Tab, Tabs, Typography 
 import { useSelector } from "react-redux";
 
 import useApi from "../../hooks/useApi";
+import usePushSubscription from "../../hooks/usePushSubscription";
 import { selectAuthUser } from "../../redux/authSlice";
 import userService from "../../services/userService";
 import tokenManager from "../../utils/tokenManager";
@@ -16,6 +17,7 @@ export const TAB_FAVORITES = "favorites";
 
 function MyPageSidebar({ activeTab, onTabChange }) {
   const user = useSelector(selectAuthUser);
+  const { doUnsubscribe, unsubscribeLoading, isSubscribed } = usePushSubscription();
   const { execute: deleteUser, loading: deleteLoading } = useApi(userService.deleteUser);
 
   const handleTabChange = (event, newValue) => {
@@ -24,6 +26,14 @@ function MyPageSidebar({ activeTab, onTabChange }) {
 
   const handleDeleteUser = async () => {
     if (confirm("정말로 탈퇴하실 건가요?")) {
+      if (isSubscribed) {
+        try {
+          await doUnsubscribe();
+        } catch (err) {
+          console.warn(err);
+        }
+      }
+
       try {
         await deleteUser(user.id);
         tokenManager.logout();
@@ -104,7 +114,7 @@ function MyPageSidebar({ activeTab, onTabChange }) {
         <Button
           fullWidth
           color="error"
-          disabled={deleteLoading}
+          disabled={unsubscribeLoading || deleteLoading}
           onClick={handleDeleteUser}
           startIcon={<LogoutIcon />}
           sx={{ justifyContent: "flex-start", px: 2, py: 1, borderRadius: 2 }}

@@ -21,6 +21,7 @@ const usePushSubscription = () => {
       setIsSubscribed(true);
     } catch (err) {
       await sub.unsubscribe();
+      setIsSubscribed(false);
       throw err;
     }
   };
@@ -30,6 +31,7 @@ const usePushSubscription = () => {
     const sub = await reg.pushManager.getSubscription();
 
     if (!sub) {
+      setIsSubscribed(false);
       return;
     }
 
@@ -45,6 +47,7 @@ const usePushSubscription = () => {
     const checkSubscription = async () => {
       const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.getSubscription();
+
       setIsSubscribed(!!sub);
     };
     checkSubscription();
