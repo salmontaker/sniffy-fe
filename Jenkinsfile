@@ -13,6 +13,10 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                script {
+                    def repoUrl = scm.userRemoteConfigs[0].url
+                    env.REPO_NAME = repoUrl.tokenize('/').last().replace('.git', '')
+                }
             }
         }
 
@@ -34,28 +38,23 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                script {
-                    def repoUrl = scm.userRemoteConfigs[0].url
-                    def repoName = repoUrl.tokenize('/').last().replace('.git', '')
-
-                    sh "docker build -t ${repoName}:latest ."
-                    sh "docker stop ${repoName} || true"
-                    sh "docker rm ${repoName} || true"
-                    sh """
-                        docker run \\
-                            -d \\
-                            --name ${repoName} \\
-                            --network=web \\
-                            --restart=always \\
-                            ${repoName}:latest
-                    """
-                }
+                sh "docker build --label service=${REPO_NAME} -t ${REPO_NAME}:latest ."
+                sh "docker stop ${REPO_NAME} || true"
+                sh "docker rm ${REPO_NAME} || true"
+                sh """
+                    docker run \\
+                        -d \\
+                        --name ${REPO_NAME} \\
+                        --network=web \\
+                        --restart=always \\
+                        ${REPO_NAME}:latest
+                """
             }
         }
 
         stage('Clean Up') {
             steps {
-                sh 'docker image prune -f --filter "dangling=true"'
+                sh "docker image prune -f --filter 'label=service=${REPO_NAME}' --filter 'dangling=true'"
             }
         }
     }
