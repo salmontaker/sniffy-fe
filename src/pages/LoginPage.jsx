@@ -1,29 +1,28 @@
 import { Box, Button, Paper, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import AuthFormContainer from "../components/auth/AuthFormContainer";
 import AuthFormHeader from "../components/auth/AuthFormHeader";
 import useApi from "../hooks/useApi";
-import { selectIsAuthenticated, setUser } from "../redux/authSlice";
+import useInitializeAuth from "../hooks/useInitializeAuth";
+import { selectIsAuthenticated } from "../redux/authSlice";
 import authService from "../services/authService";
-import userService from "../services/userService";
-import tokenManager from "../utils/tokenManager";
 
 function LoginPage() {
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
   const [form, setForm] = useState({ username: "", password: "" });
   const [formErrors, setFormErrors] = useState({});
+
   const { execute: login, loading: loginLoading } = useApi(authService.login);
-  const { execute: getCurrentUser, loading: userLoading } = useApi(userService.getCurrentUser);
+  const { handleInitializeAuth } = useInitializeAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -69,11 +68,10 @@ function LoginPage() {
     const { username, password } = form;
 
     try {
-      const loginRes = await login({ username, password });
-      tokenManager.setToken(loginRes.data.accessToken);
+      const response = await login({ username, password });
+      const { accessToken } = response.data;
 
-      const userRes = await getCurrentUser();
-      dispatch(setUser(userRes.data));
+      await handleInitializeAuth(accessToken);
     } catch (error) {
       alert(error);
     }
@@ -131,13 +129,13 @@ function LoginPage() {
 
             <Button
               type="submit"
-              disabled={loginLoading || userLoading}
+              disabled={loginLoading}
               fullWidth
               variant="contained"
               color="primary"
               sx={{ py: 1.5 }}
             >
-              {loginLoading || userLoading ? "로그인 중..." : "로그인"}
+              {loginLoading ? "로그인 중..." : "로그인"}
             </Button>
           </Box>
         </Paper>

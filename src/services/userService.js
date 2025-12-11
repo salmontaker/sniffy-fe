@@ -6,11 +6,6 @@ const userService = {
     return response.data;
   },
 
-  getCurrentUser: async () => {
-    const response = await httpClient.get("/users/me");
-    return response.data;
-  },
-
   createUser: async (userData) => {
     const response = await httpClient.post("/users", userData);
     return response.data;
@@ -23,6 +18,16 @@ const userService = {
 
   deleteUser: async () => {
     const response = await httpClient.delete("/users");
+    return response.data;
+  },
+
+  getCurrentUser: async () => {
+    const response = await httpClient.get("/users/me");
+    return response.data;
+  },
+
+  updatePreference: async (preference) => {
+    const response = await httpClient.put("/users/me/preference", preference);
     return response.data;
   }
 };

@@ -11,11 +11,6 @@ const userKeywordService = {
     return response.data;
   },
 
-  updateKeyword: async (keywordId) => {
-    const response = await httpClient.put(`/keywords/${keywordId}`);
-    return response.data;
-  },
-
   deleteKeyword: async (keywordId) => {
     const response = await httpClient.delete(`/keywords/${keywordId}`);
     return response.data;

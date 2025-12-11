@@ -14,28 +14,36 @@ import {
   Typography
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import useApi from "../../hooks/useApi";
 import usePushSubscription from "../../hooks/usePushSubscription";
+import { setUser } from "../../redux/authSlice";
 import userKeywordService from "../../services/userKeywordService";
+import userService from "../../services/userService";
 import LoadingSpinner from "../common/LoadingSpinner";
 
 function NotificationSettings() {
-  const { doSubscribe, doUnsubscribe, subscribeLoading, unsubscribeLoading, isSubscribed } = usePushSubscription();
+  const dispatch = useDispatch();
+  const { subscribe, unsubscribe, loading: subscriptionLoading, isSubscribed } = usePushSubscription();
 
+  const { execute: updatePreference } = useApi(userService.updatePreference);
   const { execute: getKeywords, loading: getKeywordLoading } = useApi(userKeywordService.getKeywords);
   const { execute: createKeyword } = useApi(userKeywordService.createKeyword);
   const { execute: deleteKeyword } = useApi(userKeywordService.deleteKeyword);
   const [keywordInput, setKeywordInput] = useState("");
   const [keywords, setKeywords] = useState([]);
 
-  const handleNotificationChange = async () => {
+  const handleNotificationChange = async (event, checked) => {
     try {
       if (isSubscribed) {
-        await doUnsubscribe();
+        await unsubscribe();
       } else {
-        await doSubscribe();
+        await subscribe();
       }
+
+      const response = await updatePreference({ isPushEnabled: checked });
+      dispatch(setUser(response.data));
     } catch (err) {
       alert(err);
     }
@@ -116,15 +124,15 @@ function NotificationSettings() {
           <List disablePadding>
             <ListItem sx={{ px: 0, py: 1 }}>
               <ListItemText
-                primary={<Typography variant="body1">브라우저 푸시 알림</Typography>}
+                primary={<Typography variant="body1">푸시 알림</Typography>}
                 secondary={
                   <Typography variant="body2" color="text.secondary">
-                    사이트 내 알림 정보를 브라우저 푸시 알림으로 받아볼 수 있어요.
+                    사이트 내 알림 정보를 푸시 알림으로 받아볼 수 있어요.
                   </Typography>
                 }
               />
               <Switch
-                disabled={subscribeLoading || unsubscribeLoading}
+                disabled={subscriptionLoading}
                 edge="end"
                 checked={isSubscribed}
                 onChange={handleNotificationChange}

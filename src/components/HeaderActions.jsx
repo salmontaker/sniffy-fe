@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 
 import useApi from "../hooks/useApi";
+import usePushSubscription from "../hooks/usePushSubscription";
 import useThemeMode from "../hooks/useThemeMode";
 import { selectIsAuthenticated } from "../redux/authSlice";
 import { selectNoticeCount, setNoticeCount } from "../redux/noticeSlice";
@@ -35,9 +36,11 @@ function HeaderActions() {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const noticeCount = useSelector(selectNoticeCount);
+
   const { mode, toggleTheme } = useThemeMode();
   const { execute: logout, loading: logoutLoading } = useApi(authService.logout);
   const { execute: getNotices } = useApi(noticeService.getNotices);
+  const { unsubscribe, loading: subscriptionLoading, isSubscribed } = usePushSubscription();
 
   const [menuAnchor, setMenuAnchor] = useState(null);
   const menuOpen = Boolean(menuAnchor);
@@ -51,14 +54,22 @@ function HeaderActions() {
   };
 
   const handleLogout = async () => {
-    if (isAuthenticated) {
+    if (!isAuthenticated) {
+      return;
+    }
+
+    if (isSubscribed) {
       try {
-        await logout();
+        await unsubscribe();
       } catch (err) {
         console.error(err);
-      } finally {
-        tokenManager.logout();
       }
+    }
+
+    try {
+      await logout();
+    } finally {
+      tokenManager.logout();
     }
   };
 
@@ -105,7 +116,7 @@ function HeaderActions() {
                 <ListItemText primary="마이페이지" />
               </ListItemButton>
 
-              <ListItemButton onClick={handleLogout} disabled={logoutLoading}>
+              <ListItemButton onClick={handleLogout} disabled={subscriptionLoading || logoutLoading}>
                 <ListItemIcon>
                   <LogoutIcon color="error" />
                 </ListItemIcon>
@@ -172,7 +183,7 @@ function HeaderActions() {
 
               <Divider />
 
-              <MenuItem disabled={logoutLoading} onClick={handleLogout}>
+              <MenuItem disabled={subscriptionLoading || logoutLoading} onClick={handleLogout}>
                 <ListItemIcon>
                   <LogoutIcon fontSize="small" />
                 </ListItemIcon>
