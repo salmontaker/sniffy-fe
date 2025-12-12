@@ -3,9 +3,9 @@ import { Alert, Box, Button, Stack, TextField, Typography } from "@mui/material"
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import useApi from "../../hooks/useApi";
-import { selectAuthUser, setUser } from "../../redux/authSlice";
-import userService from "../../services/userService";
+import useApi from "@/hooks/useApi";
+import { selectAuthUser, setUser } from "@/redux/authSlice";
+import userService from "@/services/userService";
 
 function ProfileSettings() {
   const dispatch = useDispatch();

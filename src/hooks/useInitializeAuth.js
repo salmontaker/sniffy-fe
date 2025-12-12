@@ -1,11 +1,11 @@
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 
-import { setUser } from "../redux/authSlice";
-import userService from "../services/userService";
-import tokenManager from "../utils/tokenManager";
-import useApi from "./useApi";
-import usePushSubscription from "./usePushSubscription";
+import useApi from "@/hooks/useApi";
+import usePushSubscription from "@/hooks/usePushSubscription";
+import { setUser } from "@/redux/authSlice";
+import userService from "@/services/userService";
+import tokenManager from "@/utils/tokenManager";
 
 const useInitializeAuth = () => {
   const dispatch = useDispatch();

@@ -3,13 +3,13 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useEffect, useMemo } from "react";
 import { Routes } from "react-router-dom";
 
-import Layout from "../components/Layout";
-import useApi from "../hooks/useApi";
-import useInitializeAuth from "../hooks/useInitializeAuth";
-import useThemeMode from "../hooks/useThemeMode";
-import authService from "../services/authService";
-import tokenManager from "../utils/tokenManager";
-import { appRoutes } from "./routes";
+import { appRoutes } from "@/app/routes";
+import Layout from "@/components/Layout";
+import useApi from "@/hooks/useApi";
+import useInitializeAuth from "@/hooks/useInitializeAuth";
+import useThemeMode from "@/hooks/useThemeMode";
+import authService from "@/services/authService";
+import tokenManager from "@/utils/tokenManager";
 
 function App() {
   const { execute: refresh } = useApi(authService.refresh);

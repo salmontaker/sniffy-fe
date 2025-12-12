@@ -1,10 +1,10 @@
 import { Box, Card, CardContent, Grid } from "@mui/material";
 import { useState } from "react";
 
-import FavoriteAgencies from "../components/mypage/FavoriteAgencies";
-import MyPageSidebar, { TAB_FAVORITES, TAB_NOTIFICATIONS, TAB_PROFILE } from "../components/mypage/MyPageSidebar";
-import NotificationSettings from "../components/mypage/NotificationSettings";
-import ProfileSettings from "../components/mypage/ProfileSettings";
+import FavoriteAgencies from "@/components/mypage/FavoriteAgencies";
+import MyPageSidebar, { TAB_FAVORITES, TAB_NOTIFICATIONS, TAB_PROFILE } from "@/components/mypage/MyPageSidebar";
+import NotificationSettings from "@/components/mypage/NotificationSettings";
+import ProfileSettings from "@/components/mypage/ProfileSettings";
 
 function MyPage() {
   const [activeTab, setActiveTab] = useState(TAB_PROFILE);

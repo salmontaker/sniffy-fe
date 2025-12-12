@@ -16,12 +16,12 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import useApi from "../../hooks/useApi";
-import usePushSubscription from "../../hooks/usePushSubscription";
-import { setUser } from "../../redux/authSlice";
-import userKeywordService from "../../services/userKeywordService";
-import userService from "../../services/userService";
-import LoadingSpinner from "../common/LoadingSpinner";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import useApi from "@/hooks/useApi";
+import usePushSubscription from "@/hooks/usePushSubscription";
+import { setUser } from "@/redux/authSlice";
+import userKeywordService from "@/services/userKeywordService";
+import userService from "@/services/userService";
 
 function NotificationSettings() {
   const dispatch = useDispatch();

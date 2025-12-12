@@ -2,10 +2,10 @@ import { Box, Card, CardContent, Grid, Link, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
-import useApi from "../../../hooks/useApi";
-import foundItemService from "../../../services/foundItemService";
-import EmptyData from "../../common/EmptyData";
-import LoadingSpinner from "../../common/LoadingSpinner";
+import EmptyData from "@/components/common/EmptyData";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import useApi from "@/hooks/useApi";
+import foundItemService from "@/services/foundItemService";
 
 function RecentItemsSection() {
   const { execute: getSampleItems, loading: sampleItemsLoading } = useApi(foundItemService.getSampleItems);

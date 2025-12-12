@@ -1,4 +1,4 @@
-import httpClient from "../utils/httpClient";
+import httpClient from "@/utils/httpClient";
 
 const noticeService = {
   getNotices: async (page = 1, size = 5) => {

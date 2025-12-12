@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-import usePlaceSearch from "../../../hooks/usePlaceSearch";
-import KakaoMap from "../KakaoMap";
+import KakaoMap from "@/components/home/KakaoMap";
+import usePlaceSearch from "@/hooks/usePlaceSearch";
 
 function MapSearchSection() {
   const [query, setSearchQuery] = useState("");

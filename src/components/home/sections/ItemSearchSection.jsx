@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { createSearchParams, useNavigate } from "react-router-dom";
 
-import ItemSearchForm from "../../search/ItemSearchForm";
+import ItemSearchForm from "@/components/search/ItemSearchForm";
 
 function ItemSearchSection() {
   const navigate = useNavigate();

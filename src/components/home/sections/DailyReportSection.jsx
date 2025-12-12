@@ -12,10 +12,10 @@ import {
 import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
-import useApi from "../../../hooks/useApi";
-import statsService from "../../../services/statsService";
-import EmptyData from "../../common/EmptyData";
-import LoadingSpinner from "../../common/LoadingSpinner";
+import EmptyData from "@/components/common/EmptyData";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import useApi from "@/hooks/useApi";
+import statsService from "@/services/statsService";
 
 function DailyReportSection() {
   const { execute: getTop5Agencies, loading: top5AgenciesLoading } = useApi(statsService.getTop5Agencies);

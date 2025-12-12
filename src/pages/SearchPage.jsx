@@ -2,11 +2,11 @@ import { Box, Card, CardContent, Link, Pagination, Stack, Typography } from "@mu
 import { useEffect, useState } from "react";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 
-import EmptyData from "../components/common/EmptyData";
-import LoadingSpinner from "../components/common/LoadingSpinner";
-import ItemSearchForm from "../components/search/ItemSearchForm";
-import useApi from "../hooks/useApi";
-import foundItemService from "../services/foundItemService";
+import EmptyData from "@/components/common/EmptyData";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import ItemSearchForm from "@/components/search/ItemSearchForm";
+import useApi from "@/hooks/useApi";
+import foundItemService from "@/services/foundItemService";
 
 function SearchPage() {
   const { execute: getFoundItems, loading: foundItemsLoading } = useApi(foundItemService.getFoundItems);

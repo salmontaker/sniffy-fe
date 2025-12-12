@@ -4,10 +4,10 @@ import Linkify from "linkify-react";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import LoadingSpinner from "../components/common/LoadingSpinner";
-import useApi from "../hooks/useApi";
-import { setNoticeCount } from "../redux/noticeSlice";
-import noticeService from "../services/noticeService";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import useApi from "@/hooks/useApi";
+import { setNoticeCount } from "@/redux/noticeSlice";
+import noticeService from "@/services/noticeService";
 
 function NoticePage() {
   const dispatch = useDispatch();

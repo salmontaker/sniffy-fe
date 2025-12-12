@@ -5,8 +5,8 @@ import { alpha } from "@mui/material/styles";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import HeaderActions from "./HeaderActions";
-import SearchForm from "./SearchForm";
+import HeaderActions from "@/components/HeaderActions";
+import SearchForm from "@/components/SearchForm";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

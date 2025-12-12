@@ -17,8 +17,8 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-import categories from "../../constants/categories";
-import colors from "../../constants/colors";
+import categories from "@/constants/categories";
+import colors from "@/constants/colors";
 
 function ItemSearchForm({ initialValues = {}, onSubmit }) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);

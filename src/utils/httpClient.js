@@ -1,6 +1,6 @@
 import axios, { HttpStatusCode } from "axios";
 
-import tokenManager from "./tokenManager";
+import tokenManager from "@/utils/tokenManager";
 
 const baseURL = import.meta.env.VITE_API_URL ?? "http://localhost:8080/api";
 

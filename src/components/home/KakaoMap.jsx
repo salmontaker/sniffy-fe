@@ -6,11 +6,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { CustomOverlayMap, Map, MapMarker, MarkerClusterer, useKakaoLoader } from "react-kakao-maps-sdk";
 import { useSelector } from "react-redux";
 
-import useApi from "../../hooks/useApi";
-import useGeolocation from "../../hooks/useGeolocation";
-import { selectIsAuthenticated } from "../../redux/authSlice";
-import agencyService from "../../services/agencyService";
-import EmptyData from "./../common/EmptyData";
+import EmptyData from "@/components/common/EmptyData";
+import useApi from "@/hooks/useApi";
+import useGeolocation from "@/hooks/useGeolocation";
+import { selectIsAuthenticated } from "@/redux/authSlice";
+import agencyService from "@/services/agencyService";
 
 const DEFAULT_CENTER = { lat: 37.5666805, lng: 126.9784147 };
 const DEFAULT_LEVEL = 5;

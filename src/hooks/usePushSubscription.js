@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { selectIsSubscribed, setSubscriptionStatus } from "../redux/authSlice";
-import pushService from "../services/pushService";
-import urlBase64ToUint8Array from "../utils/urlBase64ToUint8Array";
-import useApi from "./useApi";
+import useApi from "@/hooks/useApi";
+import { selectIsSubscribed, setSubscriptionStatus } from "@/redux/authSlice";
+import pushService from "@/services/pushService";
+import urlBase64ToUint8Array from "@/utils/urlBase64ToUint8Array";
 
 const usePushSubscription = () => {
   const dispatch = useDispatch();

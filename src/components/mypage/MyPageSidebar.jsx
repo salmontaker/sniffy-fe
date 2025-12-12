@@ -5,10 +5,10 @@ import StarIcon from "@mui/icons-material/Star";
 import { Avatar, Box, Button, Card, CardContent, Divider, Tab, Tabs, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 
-import useApi from "../../hooks/useApi";
-import { selectAuthUser } from "../../redux/authSlice";
-import userService from "../../services/userService";
-import tokenManager from "../../utils/tokenManager";
+import useApi from "@/hooks/useApi";
+import { selectAuthUser } from "@/redux/authSlice";
+import userService from "@/services/userService";
+import tokenManager from "@/utils/tokenManager";
 
 export const TAB_PROFILE = "profile";
 export const TAB_NOTIFICATIONS = "notifications";

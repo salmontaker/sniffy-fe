@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { selectThemeMode, setThemeMode } from "../redux/themeSlice";
+import { selectThemeMode, setThemeMode } from "@/redux/themeSlice";
 
 const useThemeMode = () => {
   const dispatch = useDispatch();

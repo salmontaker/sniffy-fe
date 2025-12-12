@@ -5,9 +5,9 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { Box, Card, CardContent, IconButton, Pagination, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 
-import useApi from "../../hooks/useApi";
-import agencyService from "../../services/agencyService";
-import LoadingSpinner from "../common/LoadingSpinner";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import useApi from "@/hooks/useApi";
+import agencyService from "@/services/agencyService";
 
 function FavoriteAgencies() {
   const { execute: getFavoriteAgencies, loading: favoriteAgenciesLoading } = useApi(agencyService.getFavoriteAgencies);

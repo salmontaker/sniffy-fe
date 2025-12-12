@@ -23,14 +23,14 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 
-import useApi from "../hooks/useApi";
-import usePushSubscription from "../hooks/usePushSubscription";
-import useThemeMode from "../hooks/useThemeMode";
-import { selectIsAuthenticated } from "../redux/authSlice";
-import { selectNoticeCount, setNoticeCount } from "../redux/noticeSlice";
-import authService from "../services/authService";
-import noticeService from "../services/noticeService";
-import tokenManager from "../utils/tokenManager";
+import useApi from "@/hooks/useApi";
+import usePushSubscription from "@/hooks/usePushSubscription";
+import useThemeMode from "@/hooks/useThemeMode";
+import { selectIsAuthenticated } from "@/redux/authSlice";
+import { selectNoticeCount, setNoticeCount } from "@/redux/noticeSlice";
+import authService from "@/services/authService";
+import noticeService from "@/services/noticeService";
+import tokenManager from "@/utils/tokenManager";
 
 function HeaderActions() {
   const dispatch = useDispatch();

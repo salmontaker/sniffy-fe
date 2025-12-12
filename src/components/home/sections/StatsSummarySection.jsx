@@ -1,10 +1,10 @@
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
-import useApi from "../../../hooks/useApi";
-import statsService from "../../../services/statsService";
-import EmptyData from "../../common/EmptyData";
-import LoadingSpinner from "../../common/LoadingSpinner";
+import EmptyData from "@/components/common/EmptyData";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import useApi from "@/hooks/useApi";
+import statsService from "@/services/statsService";
 
 function StatsSummarySection() {
   const { execute: getFoundItemTotals, loading: foundItemTotalsLoading } = useApi(statsService.getFoundItemTotals);

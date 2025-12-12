@@ -2,10 +2,10 @@ import { Box, Card, CardContent, Grid, Link, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import EmptyData from "../components/common/EmptyData";
-import LoadingSpinner from "../components/common/LoadingSpinner";
-import useApi from "../hooks/useApi";
-import foundItemService from "../services/foundItemService";
+import EmptyData from "@/components/common/EmptyData";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import useApi from "@/hooks/useApi";
+import foundItemService from "@/services/foundItemService";
 
 function ItemDetailPage() {
   const { id } = useParams();

@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import AuthFormContainer from "../components/auth/AuthFormContainer";
-import AuthFormHeader from "../components/auth/AuthFormHeader";
-import useApi from "../hooks/useApi";
-import useInitializeAuth from "../hooks/useInitializeAuth";
-import { selectIsAuthenticated } from "../redux/authSlice";
-import authService from "../services/authService";
+import AuthFormContainer from "@/components/auth/AuthFormContainer";
+import AuthFormHeader from "@/components/auth/AuthFormHeader";
+import useApi from "@/hooks/useApi";
+import useInitializeAuth from "@/hooks/useInitializeAuth";
+import { selectIsAuthenticated } from "@/redux/authSlice";
+import authService from "@/services/authService";
 
 function LoginPage() {
   const [searchParams] = useSearchParams();
