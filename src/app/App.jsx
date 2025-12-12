@@ -5,10 +5,10 @@ import { Routes } from "react-router-dom";
 
 import { appRoutes } from "@/app/routes";
 import Layout from "@/components/Layout";
+import authService from "@/features/auth/api/authService";
+import useInitializeAuth from "@/features/auth/hooks/useInitializeAuth";
+import useThemeMode from "@/features/theme/hooks/useThemeMode";
 import useApi from "@/hooks/useApi";
-import useInitializeAuth from "@/hooks/useInitializeAuth";
-import useThemeMode from "@/hooks/useThemeMode";
-import authService from "@/services/authService";
 import tokenManager from "@/utils/tokenManager";
 
 function App() {

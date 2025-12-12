@@ -1,14 +1,14 @@
 import { Route } from "react-router-dom";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
-import HomePage from "@/pages/HomePage";
-import ItemDetailPage from "@/pages/ItemDetailPage";
-import LoginPage from "@/pages/LoginPage";
-import MyPage from "@/pages/MyPage";
+import LoginPage from "@/features/auth/pages/LoginPage";
+import RegisterPage from "@/features/auth/pages/RegisterPage";
+import HomePage from "@/features/home/pages/HomePage";
+import ItemDetailPage from "@/features/items/pages/ItemDetailPage";
+import ItemSearchPage from "@/features/items/pages/ItemSearchPage";
+import MyPage from "@/features/mypage/pages/MyPage";
+import NoticePage from "@/features/notice/pages/NoticePage";
 import NotFoundPage from "@/pages/NotFoundPage";
-import NoticePage from "@/pages/NoticePage";
-import RegisterPage from "@/pages/RegisterPage";
-import SearchPage from "@/pages/SearchPage";
 
 export const appRoutes = () => {
   return (
@@ -16,7 +16,7 @@ export const appRoutes = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/search" element={<SearchPage />} />
+      <Route path="/search" element={<ItemSearchPage />} />
       <Route path="/items/:id" element={<ItemDetailPage />} />
       <Route path="*" element={<NotFoundPage />} />
 
