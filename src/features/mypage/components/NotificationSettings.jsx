@@ -14,10 +14,10 @@ import {
   Typography
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { setUser } from "@/features/auth/slices/authSlice";
+import { selectAuthUser, setUser } from "@/features/auth/slices/authSlice";
 import userKeywordService from "@/features/mypage/api/userKeywordService";
 import userService from "@/features/mypage/api/userService";
 import usePushSubscription from "@/features/push/hooks/usePushSubscription";
@@ -25,16 +25,17 @@ import useApi from "@/hooks/useApi";
 
 function NotificationSettings() {
   const dispatch = useDispatch();
-  const { subscribe, unsubscribe, loading: subscriptionLoading, isSubscribed } = usePushSubscription();
+  const user = useSelector(selectAuthUser);
+  const { subscribe, unsubscribe, isSubscribed } = usePushSubscription();
 
-  const { execute: updatePreference } = useApi(userService.updatePreference);
+  const { execute: updatePreference, loading: updatePreferenceLoading } = useApi(userService.updatePreference);
   const { execute: getKeywords, loading: getKeywordLoading } = useApi(userKeywordService.getKeywords);
   const { execute: createKeyword } = useApi(userKeywordService.createKeyword);
   const { execute: deleteKeyword } = useApi(userKeywordService.deleteKeyword);
   const [keywordInput, setKeywordInput] = useState("");
   const [keywords, setKeywords] = useState([]);
 
-  const handleNotificationChange = async (event, checked) => {
+  const handlePushChange = async (event, checked) => {
     try {
       if (isSubscribed) {
         await unsubscribe();
@@ -47,6 +48,11 @@ function NotificationSettings() {
     } catch (err) {
       alert(err);
     }
+  };
+
+  const handleFavoriteFirstChange = async (event, checked) => {
+    const response = await updatePreference({ isFavoriteFirst: checked });
+    dispatch(setUser(response.data));
   };
 
   const fetchKeywords = useCallback(async () => {
@@ -132,10 +138,28 @@ function NotificationSettings() {
                 }
               />
               <Switch
-                disabled={subscriptionLoading}
+                disabled={updatePreferenceLoading}
                 edge="end"
-                checked={isSubscribed}
-                onChange={handleNotificationChange}
+                checked={user.isPushEnabled}
+                onChange={handlePushChange}
+                color="primary"
+              />
+            </ListItem>
+
+            <ListItem sx={{ px: 0, py: 1 }}>
+              <ListItemText
+                primary={<Typography variant="body1">즐겨찾기한 센터 우선</Typography>}
+                secondary={
+                  <Typography variant="body2" color="text.secondary">
+                    내가 즐겨찾기한 센터를 우선해서 키워드 알림을 받을 수 있어요.
+                  </Typography>
+                }
+              />
+              <Switch
+                disabled={updatePreferenceLoading}
+                edge="end"
+                checked={user.isFavoriteFirst}
+                onChange={handleFavoriteFirstChange}
                 color="primary"
               />
             </ListItem>
