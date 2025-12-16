@@ -64,7 +64,7 @@ httpClient.interceptors.response.use(
 
     try {
       const response = await httpClient.post("/auth/refresh");
-      const { accessToken } = response.data.data.accessToken;
+      const { accessToken } = response.data.data;
 
       tokenManager.setToken(accessToken);
       onRefreshed(accessToken);
