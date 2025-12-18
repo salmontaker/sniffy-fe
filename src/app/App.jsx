@@ -1,5 +1,5 @@
 import CssBaseline from "@mui/material/CssBaseline";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { useEffect, useMemo } from "react";
 import { Routes } from "react-router-dom";
 
@@ -9,6 +9,7 @@ import authService from "@/features/auth/api/authService";
 import useInitializeAuth from "@/features/auth/hooks/useInitializeAuth";
 import useThemeMode from "@/features/theme/hooks/useThemeMode";
 import useApi from "@/hooks/useApi";
+import { createAppTheme } from "@/styles/theme";
 import tokenManager from "@/utils/tokenManager";
 
 function App() {
@@ -16,18 +17,7 @@ function App() {
   const { handleInitializeAuth } = useInitializeAuth();
   const { mode } = useThemeMode();
 
-  const theme = useMemo(() => {
-    return createTheme({
-      palette: {
-        mode,
-        primary: {
-          main: "#FF8A00",
-          light: "#FFE7C2",
-          dark: "#FF7000"
-        }
-      }
-    });
-  }, [mode]);
+  const theme = useMemo(() => createAppTheme(mode), [mode]);
 
   useEffect(() => {
     const init = async () => {

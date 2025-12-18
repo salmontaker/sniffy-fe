@@ -103,9 +103,12 @@ function NotificationSettings() {
 
   return (
     <Box>
-      <Typography variant="h5" fontWeight="bold" mb={3}>
-        알림 설정
-      </Typography>
+      <Box display="flex" alignItems="center" gap={1} mb={3}>
+        <Box sx={{ width: 4, height: 18, bgcolor: "primary.main", borderRadius: 1 }} />
+        <Typography variant="h5" fontWeight="bold">
+          알림 설정
+        </Typography>
+      </Box>
 
       <Card
         elevation={0}
@@ -191,12 +194,15 @@ function NotificationSettings() {
           </Typography>
 
           <Box
+            display="flex"
+            gap={2}
+            mb={3}
+            flexDirection={{ xs: "column", sm: "row" }}
             component="form"
             onSubmit={(e) => {
               e.preventDefault();
               handleAddKeyword();
             }}
-            sx={{ display: "flex", gap: 2, mb: 3 }}
           >
             <TextField
               fullWidth

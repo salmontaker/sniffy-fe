@@ -22,7 +22,7 @@ function MyPage() {
 
         <Grid size={{ xs: 12, md: 8, lg: 9 }}>
           <Card sx={{ borderRadius: 3, boxShadow: "0 4px 12px rgba(0,0,0,0.1)", minHeight: 650 }}>
-            <CardContent sx={{ p: 4 }}>
+            <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
               {activeTab === TAB_PROFILE && <ProfileSettings />}
               {activeTab === TAB_NOTIFICATIONS && <NotificationSettings />}
               {activeTab === TAB_FAVORITES && <FavoriteAgencies />}

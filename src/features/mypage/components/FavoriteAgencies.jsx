@@ -52,9 +52,12 @@ function FavoriteAgencies() {
 
   return (
     <Box>
-      <Typography variant="h5" fontWeight="bold" mb={3}>
-        즐겨찾기한 센터
-      </Typography>
+      <Box display="flex" alignItems="center" gap={1} mb={3}>
+        <Box sx={{ width: 4, height: 18, bgcolor: "primary.main", borderRadius: 1 }} />
+        <Typography variant="h5" fontWeight="bold">
+          즐겨찾기한 센터
+        </Typography>
+      </Box>
 
       {favoriteAgenciesLoading ? (
         <LoadingSpinner />
@@ -89,22 +92,22 @@ function FavoriteAgencies() {
                 }
               }}
             >
-              <CardContent sx={{ p: 3 }}>
+              <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                  <Box flex={1}>
-                    <Typography variant="h6" fontWeight={600} mb={1}>
+                  <Box flex={1} minWidth={0}>
+                    <Typography variant="h6" fontWeight={600} mb={0.5} noWrap>
                       {agency.name}
                     </Typography>
                     <Box display="flex" flexDirection="column" gap={0.5}>
                       <Box display="flex" alignItems="center" gap={1}>
-                        <LocationOnIcon sx={{ fontSize: 16, color: "text.secondary" }} />
-                        <Typography variant="body2" color="text.secondary">
+                        <LocationOnIcon sx={{ fontSize: 16, color: "text.secondary", flexShrink: 0 }} />
+                        <Typography variant="body2" color="text.secondary" noWrap>
                           {agency.address}
                         </Typography>
                       </Box>
                       <Box display="flex" alignItems="center" gap={1}>
-                        <PhoneIcon sx={{ fontSize: 16, color: "text.secondary" }} />
-                        <Typography variant="body2" color="text.secondary">
+                        <PhoneIcon sx={{ fontSize: 16, color: "text.secondary", flexShrink: 0 }} />
+                        <Typography variant="body2" color="text.secondary" noWrap>
                           {agency.tel}
                         </Typography>
                       </Box>
@@ -115,7 +118,7 @@ function FavoriteAgencies() {
                     size="small"
                     onClick={() => handleRemoveFavorite(agency.id)}
                     color="error"
-                    sx={{ ml: 2 }}
+                    sx={{ ml: 1, flexShrink: 0 }}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -128,15 +131,7 @@ function FavoriteAgencies() {
 
       {totalPages > 0 && (
         <Stack spacing={2} alignItems="center" mt={4}>
-          <Pagination
-            count={totalPages}
-            page={page}
-            color="primary"
-            showFirstButton
-            showLastButton
-            onChange={handlePageChange}
-            sx={{ "& .MuiPaginationItem-root": { fontSize: "0.875rem" } }}
-          />
+          <Pagination count={totalPages} page={page} color="primary" onChange={handlePageChange} />
         </Stack>
       )}
     </Box>

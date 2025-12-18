@@ -32,7 +32,7 @@ import useThemeMode from "@/features/theme/hooks/useThemeMode";
 import useApi from "@/hooks/useApi";
 import tokenManager from "@/utils/tokenManager";
 
-function HeaderActions() {
+function HeaderActions({ onAction }) {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const noticeCount = useSelector(selectNoticeCount);
@@ -93,14 +93,14 @@ function HeaderActions() {
       {/* 모바일 레이아웃 */}
       <Box sx={{ display: { xs: "block", md: "none" } }}>
         <List disablePadding>
-          <ListItemButton onClick={toggleTheme}>
+          <ListItemButton onClick={() => toggleTheme()}>
             <ListItemIcon>{mode === "dark" ? <Brightness4Icon /> : <Brightness7Icon />}</ListItemIcon>
             <ListItemText primary={mode === "dark" ? "라이트 모드로 변경" : "다크 모드로 변경"} />
           </ListItemButton>
 
           {isAuthenticated ? (
             <>
-              <ListItemButton component={RouterLink} to="/notices">
+              <ListItemButton component={RouterLink} to="/notices" onClick={onAction}>
                 <ListItemIcon>
                   <Badge badgeContent={noticeCount} color="error">
                     <NotificationsIcon />
@@ -109,14 +109,22 @@ function HeaderActions() {
                 <ListItemText primary="알림" />
               </ListItemButton>
 
-              <ListItemButton component={RouterLink} to="/mypage">
+              <ListItemButton component={RouterLink} to="/mypage" onClick={onAction}>
                 <ListItemIcon>
                   <PersonIcon />
                 </ListItemIcon>
                 <ListItemText primary="마이페이지" />
               </ListItemButton>
 
-              <ListItemButton onClick={handleLogout} disabled={subscriptionLoading || logoutLoading}>
+              <ListItemButton
+                onClick={() => {
+                  handleLogout();
+                  if (onAction) {
+                    onAction();
+                  }
+                }}
+                disabled={subscriptionLoading || logoutLoading}
+              >
                 <ListItemIcon>
                   <LogoutIcon color="error" />
                 </ListItemIcon>
@@ -132,6 +140,7 @@ function HeaderActions() {
                 fullWidth
                 size="large"
                 startIcon={<PersonIcon />}
+                onClick={onAction}
               >
                 로그인
               </Button>

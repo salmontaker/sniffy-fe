@@ -1,14 +1,7 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Typography
-} from "@mui/material";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { Box, Card, CardContent, List, ListItem, ListItemButton, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -35,68 +28,142 @@ function DailyReportSection() {
 
   return (
     <Box mb={4}>
-      <Typography variant="h6" mb={2}>
-        🐾 일일 탐정 리포트
+      <Typography variant="h6" mb={2} sx={{ display: "flex", alignItems: "center", gap: 1, fontWeight: 700 }}>
+        <AssignmentIcon color="primary" /> 일일 탐정 리포트
       </Typography>
 
       <Box display="flex" justifyContent="center" flexDirection={{ xs: "column", sm: "row" }} gap={3}>
-        <Card sx={{ flex: 1, minWidth: 250 }}>
-          <CardContent>
-            <Typography variant="h6" color="primary">
-              바쁜 유실물센터 TOP 5
-            </Typography>
-            <Divider sx={{ my: 1 }} />
-            {top5AgenciesLoading ? (
-              <LoadingSpinner />
-            ) : top5Agencies.length === 0 ? (
-              <EmptyData message="유실물센터 데이터가 없습니다" />
-            ) : (
-              <List dense>
-                {top5Agencies.map((data, index) => (
-                  <ListItem key={index} disablePadding>
-                    <ListItemButton component={RouterLink} to={`/search?agencyName=${data.name}`}>
-                      <ListItemText
-                        primary={`${index + 1}. ${data.name}`}
-                        slotProps={{ primary: { variant: "body2" } }}
-                      />
-                      <Typography variant="body2" color="text.secondary">
-                        {data.todayTotal.toLocaleString()}건
-                      </Typography>
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            )}
+        <Card
+          elevation={0}
+          sx={{ flex: 1, minWidth: 250, border: "1px solid", borderColor: "divider", borderRadius: 4 }}
+        >
+          <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+            <Box
+              sx={{
+                p: 2,
+                bgcolor: (theme) =>
+                  theme.palette.mode === "light"
+                    ? alpha(theme.palette.primary.main, 0.04)
+                    : alpha(theme.palette.primary.main, 0.08),
+                borderBottom: "1px solid",
+                borderColor: "divider"
+              }}
+            >
+              <Typography variant="subtitle1" fontWeight={700} color="primary">
+                바쁜 유실물센터 TOP 5
+              </Typography>
+            </Box>
+            <Box sx={{ p: 1 }}>
+              {top5AgenciesLoading ? (
+                <LoadingSpinner />
+              ) : top5Agencies.length === 0 ? (
+                <EmptyData message="데이터가 없습니다" />
+              ) : (
+                <List dense disablePadding>
+                  {top5Agencies.map((item, index) => (
+                    <ListItem key={index} disablePadding>
+                      <ListItemButton
+                        component={RouterLink}
+                        to={`/search?agencyName=${item.name}`}
+                        sx={{
+                          borderRadius: 2,
+                          mb: 0.5,
+                          transition: "all 0.2s",
+                          "&:hover": {
+                            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+                            transform: "translateX(4px)"
+                          }
+                        }}
+                      >
+                        <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                          <Typography variant="body2">
+                            {index + 1}. {item.name}
+                          </Typography>
+                          <Box display="flex" alignItems="center" gap={0.5}>
+                            <Typography variant="body2" color="primary" fontWeight="bold">
+                              {item.todayTotal.toLocaleString()}건
+                            </Typography>
+                            <KeyboardArrowRightIcon
+                              sx={{
+                                fontSize: 20,
+                                color: "primary.light"
+                              }}
+                            />
+                          </Box>
+                        </Box>
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
+            </Box>
           </CardContent>
         </Card>
 
-        <Card sx={{ flex: 1, minWidth: 250 }}>
-          <CardContent>
-            <Typography variant="h6" color="primary">
-              많이 잃어버린 품목 TOP 5
-            </Typography>
-            <Divider sx={{ my: 1 }} />
-            {top5CategoriesLoading ? (
-              <LoadingSpinner />
-            ) : top5Categories.length === 0 ? (
-              <EmptyData message="품목 데이터가 없습니다" />
-            ) : (
-              <List dense>
-                {top5Categories.map((data, index) => (
-                  <ListItem key={index} disablePadding>
-                    <ListItemButton component={RouterLink} to={`/search?prdtClNm=${data.category}`}>
-                      <ListItemText
-                        primary={`${index + 1}. ${data.category}`}
-                        slotProps={{ primary: { variant: "body2" } }}
-                      />
-                      <Typography variant="body2" color="text.secondary">
-                        {data.todayTotal.toLocaleString()}건
-                      </Typography>
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            )}
+        <Card
+          elevation={0}
+          sx={{ flex: 1, minWidth: 250, border: "1px solid", borderColor: "divider", borderRadius: 4 }}
+        >
+          <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+            <Box
+              sx={{
+                p: 2,
+                bgcolor: (theme) =>
+                  theme.palette.mode === "light"
+                    ? alpha(theme.palette.primary.main, 0.04)
+                    : alpha(theme.palette.primary.main, 0.08),
+                borderBottom: "1px solid",
+                borderColor: "divider"
+              }}
+            >
+              <Typography variant="subtitle1" fontWeight={700} color="primary">
+                많이 잃어버린 품목 TOP 5
+              </Typography>
+            </Box>
+            <Box sx={{ p: 1 }}>
+              {top5CategoriesLoading ? (
+                <LoadingSpinner />
+              ) : top5Categories.length === 0 ? (
+                <EmptyData message="데이터가 없습니다" />
+              ) : (
+                <List dense disablePadding>
+                  {top5Categories.map((item, index) => (
+                    <ListItem key={index} disablePadding>
+                      <ListItemButton
+                        component={RouterLink}
+                        to={`/search?prdtClNm=${item.category}`}
+                        sx={{
+                          borderRadius: 2,
+                          mb: 0.5,
+                          transition: "all 0.2s",
+                          "&:hover": {
+                            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+                            transform: "translateX(4px)"
+                          }
+                        }}
+                      >
+                        <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+                          <Typography variant="body2">
+                            {index + 1}. {item.category}
+                          </Typography>
+                          <Box display="flex" alignItems="center" gap={0.5}>
+                            <Typography variant="body2" color="primary" fontWeight="bold">
+                              {item.todayTotal.toLocaleString()}건
+                            </Typography>
+                            <KeyboardArrowRightIcon
+                              sx={{
+                                fontSize: 20,
+                                color: "primary.light"
+                              }}
+                            />
+                          </Box>
+                        </Box>
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
+            </Box>
           </CardContent>
         </Card>
       </Box>

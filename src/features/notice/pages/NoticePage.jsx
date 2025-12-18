@@ -1,5 +1,8 @@
-import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import { Box, Card, CardContent, IconButton, Pagination, Stack, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import Linkify from "linkify-react";
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -54,8 +57,8 @@ function NoticePage() {
 
   return (
     <Box py={4}>
-      <Typography variant="h5" fontWeight="bold" mb={3}>
-        알림
+      <Typography variant="h5" fontWeight={800} mb={3} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <NotificationsIcon color="primary" /> 알림
       </Typography>
 
       {noticesLoading ? (
@@ -69,8 +72,9 @@ function NoticePage() {
           minHeight={300}
           textAlign="center"
         >
-          <Typography variant="h6" color="text.secondary" mb={1}>
-            알림이 없습니다
+          <NotificationsNoneIcon sx={{ fontSize: 64, color: "text.disabled", mb: 2, opacity: 0.5 }} />
+          <Typography variant="h6" color="text.secondary" fontWeight={500}>
+            새로운 알림이 없습니다
           </Typography>
         </Box>
       ) : (
@@ -80,36 +84,56 @@ function NoticePage() {
               key={notice.id}
               sx={{
                 width: "100%",
-                borderRadius: 3,
+                borderRadius: 4,
                 border: "1px solid",
                 borderColor: "divider",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                boxShadow: "none",
+                transition: "all 0.2s ease-in-out",
                 "&:hover": {
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                  boxShadow: (theme) => `0 12px 24px ${alpha(theme.palette.common.black, 0.04)}`,
                   borderColor: "primary.main"
                 }
               }}
             >
-              <CardContent sx={{ p: 3 }}>
-                <Box display="flex" justifyContent="space-between" alignItems="center" gap={2}>
-                  <Box flex={1}>
-                    <Typography variant="subtitle2" color="text.secondary" mb={0.5}>
-                      {notice.createdAt}
-                    </Typography>
-                    <Typography variant="body1">{notice.title}</Typography>
-                    <Typography variant="body2" color="text.secondary" mt={1} whiteSpace="pre-wrap">
-                      <Linkify>{notice.content}</Linkify>
-                    </Typography>
+              <CardContent sx={{ p: 2.5 }}>
+                <Box>
+                  <Box display="flex" justifyContent="space-between" alignItems="flex-start" gap={1.5} mb={1}>
+                    <Box flex={1} minWidth={0}>
+                      <Typography variant="subtitle2" color="text.secondary" mb={0.5}>
+                        {notice.createdAt}
+                      </Typography>
+                      <Typography variant="body1" fontWeight={700} noWrap>
+                        {notice.title}
+                      </Typography>
+                    </Box>
+                    <IconButton
+                      disabled={deleteLoading}
+                      size="small"
+                      onClick={() => handleDeleteNotice(notice.id)}
+                      sx={{
+                        flexShrink: 0,
+                        color: "text.disabled",
+                        p: 0.5,
+                        mt: -0.5,
+                        mr: -0.5,
+                        "&:hover": {
+                          color: "error.main",
+                          bgcolor: (theme) => alpha(theme.palette.error.main, 0.1)
+                        }
+                      }}
+                    >
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
                   </Box>
 
-                  <IconButton
-                    disabled={deleteLoading}
-                    size="small"
-                    onClick={() => handleDeleteNotice(notice.id)}
-                    color="error"
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    whiteSpace="pre-wrap"
+                    sx={{ wordBreak: "break-all", lineHeight: 1.6 }}
                   >
-                    <DeleteIcon />
-                  </IconButton>
+                    <Linkify>{notice.content}</Linkify>
+                  </Typography>
                 </Box>
               </CardContent>
             </Card>
@@ -119,15 +143,7 @@ function NoticePage() {
 
       {totalPages > 0 && (
         <Stack spacing={2} alignItems="center" mt={4}>
-          <Pagination
-            count={totalPages}
-            page={page}
-            color="primary"
-            showFirstButton
-            showLastButton
-            onChange={handlePageChange}
-            sx={{ "& .MuiPaginationItem-root": { fontSize: "0.875rem" } }}
-          />
+          <Pagination count={totalPages} page={page} color="primary" onChange={handlePageChange} />
         </Stack>
       )}
     </Box>

@@ -36,19 +36,19 @@ function MyPageSidebar({ activeTab, onTabChange }) {
 
   return (
     <Card sx={{ borderRadius: 3, boxShadow: "0 4px 12px rgba(0,0,0,0.1)", height: "100%" }}>
-      <CardContent sx={{ p: 3, display: "flex", flexDirection: "column", height: "100%", boxSizing: "border-box" }}>
+      <CardContent
+        sx={{ display: "flex", flexDirection: "column", p: { xs: 2, sm: 4 }, height: "100%", boxSizing: "border-box" }}
+      >
         <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
           <Avatar
             sx={{
               width: 80,
               height: 80,
               mb: 2,
-              bgcolor: "primary.light",
-              color: "primary.main",
-              fontSize: "2rem"
+              bgcolor: "primary.light"
             }}
           >
-            {user?.nickname?.charAt(0) || <PersonIcon />}
+            <PersonIcon sx={{ fontSize: "3rem" }} />
           </Avatar>
           <Typography variant="h6" fontWeight="bold">
             {user?.nickname || "사용자"}

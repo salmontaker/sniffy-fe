@@ -12,6 +12,7 @@ import {
   TextField,
   Typography
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useState } from "react";
 
 import KakaoMap from "@/features/map/components/KakaoMap";
@@ -52,101 +53,84 @@ function MapSearchSection() {
 
   return (
     <Box mb={4}>
-      <Typography variant="h6" mb={2}>
-        🐾 내 물건, 지도에서 찾기
+      <Typography variant="h6" mb={2} sx={{ display: "flex", alignItems: "center", gap: 1, fontWeight: 700 }}>
+        <LocationOnIcon color="primary" /> 내 주변 유실물센터 찾기
       </Typography>
 
-      <Card
-        sx={{
-          borderRadius: 3,
-          boxShadow: "0 3px 8px rgba(0,0,0,0.06)",
-          overflow: "hidden"
-        }}
-      >
-        <CardContent>
-          <Typography variant="body1" color="text.secondary" mb={2}>
-            잃어버린 장소나 주소를 입력해보세요. 근처 유실물센터를 <strong>지도</strong> 위에 표시해드릴게요!
-          </Typography>
-
+      <Card elevation={0} sx={{ borderRadius: 4, border: "1px solid", borderColor: "divider", overflow: "hidden" }}>
+        <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
           <ClickAwayListener onClickAway={handleClickAway}>
-            <Box component="form" position="relative">
-              <Box display="flex" alignItems="center" gap={1} mb={2}>
+            <Box component="form" position="relative" mb={3}>
+              <Box display="flex" alignItems="center" gap={1.5}>
                 <TextField
-                  placeholder="예: 서울역, 강남역, 시청 등"
+                  placeholder="예: 서울역, 강남역 등"
                   variant="outlined"
-                  size="small"
                   fullWidth
                   value={query}
                   onChange={handleInputChange}
                   onFocus={handleFocus}
                   sx={{
-                    bgcolor: "background.paper",
-                    borderRadius: 2
+                    "& .MuiOutlinedInput-root": {
+                      bgcolor: (theme) => alpha(theme.palette.background.default, 0.8),
+                      borderRadius: 3,
+                      "&.Mui-focused fieldset": {
+                        borderColor: "primary.main",
+                        borderWidth: "2px"
+                      }
+                    }
                   }}
                 />
                 <Button
                   type="submit"
-                  color="primary"
                   variant="contained"
                   onClick={handleSearch}
                   disabled={!query.trim() || loading}
                   sx={{
-                    px: 2.5,
-                    py: 1,
+                    px: 3,
+                    height: 54,
+                    borderRadius: 3,
+                    fontWeight: 700,
                     whiteSpace: "nowrap",
-                    boxShadow: "none",
-                    minWidth: "auto"
+                    minWidth: "fit-content",
+                    boxShadow: (theme) => `0 8px 16px ${alpha(theme.palette.primary.main, 0.2)}`
                   }}
                 >
-                  {loading ? "검색중..." : "검색"}
+                  검색
                 </Button>
               </Box>
 
               {showResults && (
                 <Box
                   position="absolute"
-                  top="100%"
+                  top="calc(100% + 8px)"
                   left={0}
                   right={0}
-                  zIndex={10}
+                  zIndex={100}
                   bgcolor="background.paper"
-                  borderRadius={2}
-                  boxShadow={3}
+                  borderRadius={3}
+                  boxShadow="0 12px 32px rgba(0,0,0,0.12)"
                   maxHeight={300}
                   overflow="auto"
-                  mt={1}
+                  border="1px solid"
+                  borderColor="divider"
                 >
                   {results.length > 0 ? (
-                    <List dense>
+                    <List dense sx={{ p: 1 }}>
                       {results.map((result, index) => (
                         <ListItem key={index} disablePadding>
                           <ListItemButton
                             onClick={() => handleResultClick(result)}
                             selected={place?.name === result.name}
+                            sx={{ borderRadius: 2, mb: 0.5 }}
                           >
-                            <Box display="flex" alignItems="center" gap={1} width="100%">
-                              <LocationOnIcon color="action" fontSize="small" />
+                            <Box display="flex" alignItems="center" gap={1.5} width="100%">
+                              <LocationOnIcon sx={{ color: "primary.light", fontSize: 20 }} />
                               <ListItemText
                                 primary={result.name}
-                                secondary={
-                                  <Box>
-                                    <Typography variant="caption" color="text.secondary" display="block">
-                                      {result.address}
-                                    </Typography>
-                                    {result.category && (
-                                      <Typography variant="caption" color="primary" display="block">
-                                        {result.category}
-                                      </Typography>
-                                    )}
-                                  </Box>
-                                }
+                                secondary={result.address}
                                 slotProps={{
-                                  primary: {
-                                    fontWeight: place?.name === result.name ? "bold" : "normal"
-                                  },
-                                  secondary: {
-                                    component: "div"
-                                  }
+                                  primary: { variant: "body2", fontWeight: 600 },
+                                  secondary: { variant: "caption" }
                                 }}
                               />
                             </Box>
@@ -155,7 +139,7 @@ function MapSearchSection() {
                       ))}
                     </List>
                   ) : (
-                    <Box p={2} textAlign="center">
+                    <Box p={3} textAlign="center">
                       <Typography variant="body2" color="text.secondary">
                         검색 결과가 없습니다
                       </Typography>
@@ -167,16 +151,16 @@ function MapSearchSection() {
           </ClickAwayListener>
 
           <Box
-            width="100%"
-            height={320}
-            bgcolor="grey.100"
-            border="2px dashed"
-            borderColor="grey.300"
-            borderRadius={2}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            position="relative"
+            sx={{
+              width: "100%",
+              height: { xs: 280, sm: 400 },
+              bgcolor: "grey.50",
+              borderRadius: 3,
+              overflow: "hidden",
+              border: "1px solid",
+              borderColor: "divider",
+              position: "relative"
+            }}
           >
             <KakaoMap searchPlace={place} />
           </Box>

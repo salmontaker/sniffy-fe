@@ -1,5 +1,6 @@
 import FilterListIcon from "@mui/icons-material/FilterList";
 import PetsIcon from "@mui/icons-material/Pets";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   Button,
@@ -13,6 +14,7 @@ import {
   TextField,
   Typography
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -96,63 +98,123 @@ function ItemSearchForm({ initialValues = {}, onSubmit }) {
 
   return (
     <Box component="form" onSubmit={handleSubmit} mb={4}>
-      <Box display="flex" justifyContent="center" alignItems="center" gap={1}>
-        <TextField
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          label="스니피에게 물어보세요 (예: 지갑, 핸드폰)"
-          variant="outlined"
-          size="medium"
-          fullWidth
-          sx={{
-            bgcolor: "background.paper",
-            borderRadius: 2
-          }}
-        />
+      <Box
+        display="flex"
+        flexDirection={{ xs: "column", sm: "row" }}
+        justifyContent="center"
+        alignItems="stretch"
+        gap={1.5}
+      >
+        <Box display="flex" gap={1.5} flexGrow={1}>
+          <TextField
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="무엇이든 물어보세요 (예: 휴대폰)"
+            variant="outlined"
+            fullWidth
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                bgcolor: "background.paper",
+                borderRadius: 4,
+                height: 54,
+                transition: "all 0.2s",
+                "& fieldset": { borderColor: "divider" },
+                "&:hover fieldset": { borderColor: "primary.light" },
+                "&.Mui-focused fieldset": { borderWidth: "2px" }
+              }
+            }}
+          />
+          <IconButton
+            onClick={handleFilterToggle}
+            sx={{
+              width: 54,
+              height: 54,
+              borderRadius: 4,
+              bgcolor: (theme) =>
+                isFilterOpen
+                  ? alpha(theme.palette.primary.main, 0.1)
+                  : theme.palette.mode === "light"
+                    ? "grey.50"
+                    : "grey.900",
+              border: "1px solid",
+              borderColor: isFilterOpen ? "primary.main" : "divider",
+              color: isFilterOpen ? "primary.main" : "text.secondary",
+              transition: "all 0.2s",
+              "&:hover": {
+                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                borderColor: "primary.main"
+              }
+            }}
+          >
+            <FilterListIcon />
+          </IconButton>
+        </Box>
+
         <Button
           type="submit"
           variant="contained"
-          size="medium"
           endIcon={<PetsIcon />}
           sx={{
-            px: 3,
-            py: 2,
-            bgcolor: "primary.main",
-            "&:hover": { bgcolor: "primary.dark" },
-            flexShrink: 0
+            px: 4,
+            height: 54,
+            borderRadius: 4,
+            fontWeight: 800,
+            fontSize: "1.05rem",
+            boxShadow: (theme) => `0 8px 20px ${alpha(theme.palette.primary.main, 0.25)}`,
+            whiteSpace: "nowrap",
+            minWidth: { sm: 140 }
           }}
         >
-          <Typography variant="body1">찾아줘!</Typography>
+          찾아줘!
         </Button>
-        <IconButton
-          onClick={handleFilterToggle}
+      </Box>
+
+      <Collapse in={isFilterOpen}>
+        <Box
+          mt={2}
+          p={3}
           sx={{
-            px: 1,
-            py: 2,
-            borderRadius: 1,
-            flexShrink: 0
+            bgcolor: (theme) =>
+              theme.palette.mode === "light" ? "background.paper" : alpha(theme.palette.background.paper, 0.5),
+            borderRadius: 4,
+            border: "1px solid",
+            borderColor: "divider",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.04)"
           }}
         >
-          <FilterListIcon />
-        </IconButton>
-      </Box>
-      <Collapse in={isFilterOpen}>
-        <Box mt={2} bgcolor="background.paper" borderRadius={2}>
-          <Grid container spacing={2}>
+          <Box display="flex" alignItems="center" gap={1} mb={2.5}>
+            <Box sx={{ width: 4, height: 18, bgcolor: "primary.main", borderRadius: 1 }} />
+            <Typography variant="subtitle1" fontWeight={800} color="text.primary">
+              정밀 검색 필터
+            </Typography>
+          </Box>
+
+          <Grid container spacing={2.5}>
             <Grid size={{ xs: 12 }}>
               <TextField
                 name="agencyName"
-                label="보관장소"
+                label="보관 장소"
+                placeholder="예: 서울강남경찰서"
                 value={filter.agencyName}
                 onChange={handleFilterChange}
                 fullWidth
+                size="small"
+                slotProps={{
+                  input: { sx: { borderRadius: 2 } }
+                }}
               />
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6 }}>
-              <FormControl fullWidth>
-                <InputLabel>물품분류</InputLabel>
-                <Select name="prdtClNm" value={filter.prdtClNm} label="물품분류" onChange={handleFilterChange}>
+              <FormControl fullWidth size="small">
+                <InputLabel>물품 분류</InputLabel>
+                <Select
+                  name="prdtClNm"
+                  value={filter.prdtClNm}
+                  label="물품 분류"
+                  onChange={handleFilterChange}
+                  sx={{ borderRadius: 2 }}
+                >
                   <MenuItem value="">선택 안함</MenuItem>
                   {categories.map((category, index) => (
                     <MenuItem key={index} value={category}>
@@ -162,8 +224,9 @@ function ItemSearchForm({ initialValues = {}, onSubmit }) {
                 </Select>
               </FormControl>
             </Grid>
+
             <Grid size={{ xs: 12, sm: 6 }}>
-              <FormControl fullWidth>
+              <FormControl fullWidth size="small">
                 <InputLabel id="color-select-label">색상</InputLabel>
                 <Select
                   labelId="color-select-label"
@@ -173,23 +236,26 @@ function ItemSearchForm({ initialValues = {}, onSubmit }) {
                   label="색상"
                   onChange={handleFilterChange}
                   sx={{
+                    borderRadius: 2,
                     ".MuiSelect-select": {
-                      display: "flex"
+                      display: "flex",
+                      alignItems: "center"
                     }
                   }}
                 >
                   <MenuItem value="">
-                    <Box width={20} height={20} mr={1} border="1px solid #ccc" borderRadius="50%" />
+                    <Box width={18} height={18} mr={1.5} border="1px solid" borderColor="divider" borderRadius="50%" />
                     선택 안함
                   </MenuItem>
                   {colors.map((color, index) => (
                     <MenuItem key={index} value={color.name} sx={{ display: "flex", alignItems: "center" }}>
                       <Box
-                        width={20}
-                        height={20}
-                        mr={1}
+                        width={18}
+                        height={18}
+                        mr={1.5}
                         bgcolor={color.hex}
-                        border="1px solid #ccc"
+                        border="1px solid"
+                        borderColor="divider"
                         borderRadius="50%"
                       />
                       {color.name}
@@ -201,20 +267,44 @@ function ItemSearchForm({ initialValues = {}, onSubmit }) {
 
             <Grid size={{ xs: 12, sm: 6 }}>
               <DatePicker
-                label="습득날짜 (시작)"
+                label="습득 날짜 (시작)"
                 value={filter.startDate}
                 onChange={(newValue) => handleDateChange("startDate", newValue)}
-                slotProps={{ textField: { fullWidth: true } }}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    size: "small",
+                    InputProps: { sx: { borderRadius: 2 } }
+                  }
+                }}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <DatePicker
-                label="습득날짜 (종료)"
+                label="습득 날짜 (종료)"
                 value={filter.endDate}
                 onChange={(newValue) => handleDateChange("endDate", newValue)}
                 minDate={filter.startDate}
-                slotProps={{ textField: { fullWidth: true } }}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    size: "small",
+                    InputProps: { sx: { borderRadius: 2 } }
+                  }
+                }}
               />
+            </Grid>
+
+            <Grid size={{ xs: 12 }} sx={{ display: { xs: "block", sm: "none" }, mt: 1 }}>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={handleSubmit}
+                startIcon={<PetsIcon />}
+                sx={{ py: 1.5, fontWeight: 800, borderRadius: 2 }}
+              >
+                필터 적용하여 검색
+              </Button>
             </Grid>
           </Grid>
         </Box>

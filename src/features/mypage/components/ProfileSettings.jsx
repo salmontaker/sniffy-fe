@@ -72,9 +72,12 @@ function ProfileSettings() {
 
   return (
     <Box component="form" onSubmit={handleProfileUpdate}>
-      <Typography variant="h5" fontWeight="bold" mb={3}>
-        회원정보 수정
-      </Typography>
+      <Box display="flex" alignItems="center" gap={1} mb={3}>
+        <Box sx={{ width: 4, height: 18, bgcolor: "primary.main", borderRadius: 1 }} />
+        <Typography variant="h5" fontWeight="bold">
+          회원정보 수정
+        </Typography>
+      </Box>
 
       {error && (
         <Alert severity="error" icon={<WarningAmberIcon fontSize="inherit" />} sx={{ mb: 2 }}>
