@@ -68,10 +68,8 @@ function LoginPage() {
     const { username, password } = form;
 
     try {
-      const response = await login({ username, password });
-      const { accessToken } = response.data;
-
-      await handleInitializeAuth(accessToken);
+      await login({ username, password });
+      await handleInitializeAuth();
     } catch (error) {
       alert(error);
     }

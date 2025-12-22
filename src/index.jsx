@@ -9,14 +9,8 @@ import { registerSW } from "virtual:pwa-register";
 
 import App from "@/app/App";
 import { store } from "@/app/store";
-import { clearUser } from "@/features/auth/slices/authSlice";
-import tokenManager from "@/utils/tokenManager";
 
 registerSW();
-
-tokenManager.setLogoutCallback(() => {
-  store.dispatch(clearUser());
-});
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>

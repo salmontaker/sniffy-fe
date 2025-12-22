@@ -24,13 +24,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 
 import authService from "@/features/auth/api/authService";
-import { selectIsAuthenticated } from "@/features/auth/slices/authSlice";
+import { clearUser, selectIsAuthenticated } from "@/features/auth/slices/authSlice";
 import noticeService from "@/features/notice/api/noticeService";
 import { selectNoticeCount, setNoticeCount } from "@/features/notice/slices/noticeSlice";
 import usePushSubscription from "@/features/push/hooks/usePushSubscription";
 import useThemeMode from "@/features/theme/hooks/useThemeMode";
 import useApi from "@/hooks/useApi";
-import tokenManager from "@/utils/tokenManager";
 
 function HeaderActions({ onAction }) {
   const dispatch = useDispatch();
@@ -69,7 +68,7 @@ function HeaderActions({ onAction }) {
     try {
       await logout();
     } finally {
-      tokenManager.logout();
+      dispatch(clearUser());
     }
   };
 
