@@ -1,4 +1,4 @@
-import { Box, Button, Paper, TextField } from "@mui/material";
+import { Box, Button, Checkbox, FormControlLabel, Paper, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -20,6 +20,7 @@ function LoginPage() {
 
   const [form, setForm] = useState({ username: "", password: "" });
   const [formErrors, setFormErrors] = useState({});
+  const [rememberMe, setRememberMe] = useState(false);
 
   const { execute: login, loading: loginLoading } = useApi(authService.login);
   const { handleInitializeAuth } = useInitializeAuth();
@@ -68,7 +69,7 @@ function LoginPage() {
     const { username, password } = form;
 
     try {
-      await login({ username, password });
+      await login({ username, password, rememberMe });
       await handleInitializeAuth();
     } catch (error) {
       alert(error);
@@ -124,6 +125,19 @@ function LoginPage() {
               error={!!formErrors.password}
               helperText={formErrors.password}
             />
+
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <FormControlLabel
+                control={
+                  <Checkbox color="primary" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
+                }
+                label={
+                  <Typography variant="body2" color="text.secondary">
+                    로그인 상태 유지
+                  </Typography>
+                }
+              />
+            </Box>
 
             <Button
               type="submit"
