@@ -1,10 +1,13 @@
+import DirectionsIcon from "@mui/icons-material/Directions";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
+import SearchIcon from "@mui/icons-material/Search";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import { Box, Card, CircularProgress, Fab, IconButton, Typography } from "@mui/material";
+import { Box, Button, Card, CircularProgress, Divider, Fab, IconButton, Stack, Typography } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { CustomOverlayMap, Map, MapMarker, MarkerClusterer, useKakaoLoader } from "react-kakao-maps-sdk";
 import { useSelector } from "react-redux";
+import { Link as RouterLink } from "react-router-dom";
 
 import EmptyData from "@/components/common/EmptyData";
 import agencyService from "@/features/agency/api/agencyService";
@@ -162,26 +165,60 @@ function KakaoMap({ searchPlace }) {
             zIndex={1}
             clickable={true}
           >
-            <Box component={Card} p={1} minWidth={200} bgcolor="background.paper">
-              <Typography variant="subtitle1" fontWeight="bold">
-                {selectedAgency.name}
-              </Typography>
-              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-                {selectedAgency.address}
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <Typography variant="subtitle2" color="text.secondary">
-                  {selectedAgency.tel}
-                </Typography>
+            <Box component={Card} p={2} minWidth={260} borderRadius={2} boxShadow={3}>
+              <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1}>
+                <Box>
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    {selectedAgency.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {selectedAgency.address}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {selectedAgency.tel}
+                  </Typography>
+                </Box>
                 <IconButton
                   disabled={addFavoriteLoading || removeFavoriteLoading}
                   size="small"
                   onClick={() => handleToggleFavorite(selectedAgency)}
-                  sx={{ color: selectedAgency.isFavorite ? "warning.main" : "text.secondary" }}
+                  sx={{
+                    color: selectedAgency.isFavorite ? "gold" : "text.secondary",
+                    "&:hover": { bgcolor: "action.hover" }
+                  }}
                 >
                   {selectedAgency.isFavorite ? <StarIcon /> : <StarBorderIcon />}
                 </IconButton>
               </Box>
+
+              <Divider sx={{ my: 1.5 }} />
+
+              <Stack direction="row" spacing={1}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<DirectionsIcon fontSize="small" />}
+                  fullWidth
+                  href={`https://map.kakao.com/link/to/${selectedAgency.name},${selectedAgency.latitude},${selectedAgency.longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ borderRadius: 1.5 }}
+                >
+                  길찾기
+                </Button>
+                <Button
+                  component={RouterLink}
+                  to={`/search?agencyName=${selectedAgency.name}`}
+                  variant="contained"
+                  size="small"
+                  startIcon={<SearchIcon fontSize="small" />}
+                  fullWidth
+                  disableElevation
+                  sx={{ borderRadius: 1.5 }}
+                >
+                  습득물
+                </Button>
+              </Stack>
             </Box>
           </CustomOverlayMap>
         )}
