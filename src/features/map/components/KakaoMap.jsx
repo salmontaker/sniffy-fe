@@ -7,9 +7,9 @@ import { CustomOverlayMap, Map, MapMarker, MarkerClusterer, useKakaoLoader } fro
 import { useSelector } from "react-redux";
 
 import EmptyData from "@/components/common/EmptyData";
+import agencyService from "@/features/agency/api/agencyService";
 import { selectIsAuthenticated } from "@/features/auth/slices/authSlice";
 import useGeolocation from "@/features/map/hooks/useGeolocation";
-import agencyService from "@/features/mypage/api/agencyService";
 import useApi from "@/hooks/useApi";
 
 const DEFAULT_CENTER = { lat: 37.5666805, lng: 126.9784147 };

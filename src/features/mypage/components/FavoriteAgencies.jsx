@@ -6,7 +6,7 @@ import { Box, Card, CardContent, IconButton, Pagination, Stack, Typography } fro
 import { useCallback, useEffect, useState } from "react";
 
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import agencyService from "@/features/mypage/api/agencyService";
+import agencyService from "@/features/agency/api/agencyService";
 import useApi from "@/hooks/useApi";
 
 function FavoriteAgencies() {
