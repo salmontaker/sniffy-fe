@@ -1,13 +1,27 @@
-import { Box, Button, Link, Paper, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Link,
+  Paper,
+  TextField,
+  Typography
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import AuthFormContainer from "@/features/auth/components/AuthFormContainer";
 import AuthFormHeader from "@/features/auth/components/AuthFormHeader";
 import { selectIsAuthenticated } from "@/features/auth/slices/authSlice";
 import userService from "@/features/mypage/api/userService";
 import useApi from "@/hooks/useApi";
+
+import { PRIVACY_POLICY, TERMS_OF_SERVICE } from "../data/terms";
 
 function RegisterPage() {
   const [searchParams] = useSearchParams();
@@ -26,6 +40,8 @@ function RegisterPage() {
   });
 
   const [formErrors, setFormErrors] = useState({});
+  const [termsOpen, setTermsOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -171,11 +187,23 @@ function RegisterPage() {
 
             <Typography variant="caption" color="text.secondary" align="center" sx={{ mt: 3 }}>
               {"회원가입 시, "}
-              <Link component={RouterLink} to="#" color="primary" underline="hover">
+              <Link
+                component="button"
+                type="button"
+                variant="caption"
+                onClick={() => setTermsOpen(true)}
+                underline="hover"
+              >
                 이용약관
               </Link>
               {"과 "}
-              <Link component={RouterLink} to="#" color="primary" underline="hover">
+              <Link
+                component="button"
+                type="button"
+                variant="caption"
+                onClick={() => setPrivacyOpen(true)}
+                underline="hover"
+              >
                 개인정보 처리방침
               </Link>
               에 동의하는 것으로 간주됩니다.
@@ -183,6 +211,34 @@ function RegisterPage() {
           </Box>
         </Paper>
       </Box>
+
+      <Dialog open={termsOpen} onClose={() => setTermsOpen(false)} scroll="paper">
+        <DialogTitle>이용약관</DialogTitle>
+        <DialogContent dividers>
+          <DialogContentText tabIndex={-1} sx={{ whiteSpace: "pre-wrap" }}>
+            {TERMS_OF_SERVICE}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setTermsOpen(false)} autoFocus>
+            확인
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={privacyOpen} onClose={() => setPrivacyOpen(false)} scroll="paper">
+        <DialogTitle>개인정보 처리방침</DialogTitle>
+        <DialogContent dividers>
+          <DialogContentText tabIndex={-1} sx={{ whiteSpace: "pre-wrap" }}>
+            {PRIVACY_POLICY}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPrivacyOpen(false)} autoFocus>
+            확인
+          </Button>
+        </DialogActions>
+      </Dialog>
     </AuthFormContainer>
   );
 }
