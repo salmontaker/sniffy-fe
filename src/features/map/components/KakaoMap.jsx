@@ -136,33 +136,45 @@ function KakaoMap({ searchPlace }) {
             { background: "rgba(254, 251, 61, 0.7)" }
           ]}
         >
-          {agencies.map((agency) => (
-            <MapMarker
-              key={agency.id}
-              position={{
-                lat: agency.latitude,
-                lng: agency.longitude
-              }}
-              image={{
-                src: `${agency.isFavorite ? "/marker_favorite.svg" : "/marker_normal.svg"}`,
-                size: { width: 48, height: 48 },
-                options: {
-                  offset: {
-                    x: 22,
-                    y: 40
+          {agencies.map((agency, index) => {
+            const isSelected = selectedAgencyId === agency.id;
+            const markerImageSrc = agency.isFavorite
+              ? isSelected
+                ? "/marker_favorite_selected.svg"
+                : "/marker_favorite.svg"
+              : isSelected
+                ? "/marker_normal_selected.svg"
+                : "/marker_normal.svg";
+
+            return (
+              <MapMarker
+                key={agency.id}
+                zIndex={agencies.length - index}
+                position={{
+                  lat: agency.latitude,
+                  lng: agency.longitude
+                }}
+                image={{
+                  src: markerImageSrc,
+                  size: { width: 32, height: 46 },
+                  options: {
+                    offset: {
+                      x: 16,
+                      y: 38
+                    }
                   }
-                }
-              }}
-              clickable={true}
-              onClick={() => handleAgencySelect(agency)}
-            />
-          ))}
+                }}
+                clickable={true}
+                onClick={() => handleAgencySelect(agency)}
+              />
+            );
+          })}
         </MarkerClusterer>
         {selectedAgency && (
           <CustomOverlayMap
             position={{ lat: selectedAgency.latitude, lng: selectedAgency.longitude }}
-            yAnchor={1.4}
-            zIndex={1}
+            yAnchor={1.3}
+            zIndex={agencies.length + 1}
             clickable={true}
           >
             <Box component={Card} p={2} minWidth={260} borderRadius={2} boxShadow={3}>
