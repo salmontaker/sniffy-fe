@@ -9,6 +9,11 @@ const authService = {
   logout: async () => {
     const response = await httpClient.post("/auth/logout");
     return response.data;
+  },
+
+  status: async () => {
+    const response = await httpClient.get("/auth/status");
+    return response.data;
   }
 };
 
