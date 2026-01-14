@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   Chip,
+  CircularProgress,
   List,
   ListItem,
   ListItemText,
@@ -26,32 +27,38 @@ import useApi from "@/hooks/useApi";
 function NotificationSettings() {
   const dispatch = useDispatch();
   const user = useSelector(selectAuthUser);
-  const { subscribe, unsubscribe, isSubscribed } = usePushSubscription();
+  const { subscribe, unsubscribe, loading: isPushLoading } = usePushSubscription();
 
-  const { execute: updatePreference, loading: updatePreferenceLoading } = useApi(userService.updatePreference);
+  const { execute: updatePushPreference, loading: updatePushLoading } = useApi(userService.updatePreference);
+  const { execute: updateFavoritePreference, loading: updateFavoriteLoading } = useApi(userService.updatePreference);
   const { execute: getKeywords, loading: getKeywordLoading } = useApi(userKeywordService.getKeywords);
   const { execute: createKeyword } = useApi(userKeywordService.createKeyword);
   const { execute: deleteKeyword } = useApi(userKeywordService.deleteKeyword);
   const [keywordInput, setKeywordInput] = useState("");
   const [keywords, setKeywords] = useState([]);
+  const [optimisticPush, setOptimisticPush] = useState(null);
 
   const handlePushChange = async (event, checked) => {
+    setOptimisticPush(checked);
     try {
-      if (isSubscribed) {
-        await unsubscribe();
-      } else {
+      if (checked) {
         await subscribe();
+      } else {
+        await unsubscribe();
       }
 
-      const response = await updatePreference({ isPushEnabled: checked });
+      const response = await updatePushPreference({ isPushEnabled: checked });
       dispatch(setUser(response.data));
     } catch (err) {
+      setOptimisticPush(null);
       alert(err);
+    } finally {
+      setOptimisticPush(null);
     }
   };
 
   const handleFavoriteFirstChange = async (event, checked) => {
-    const response = await updatePreference({ isFavoriteFirst: checked });
+    const response = await updateFavoritePreference({ isFavoriteFirst: checked });
     dispatch(setUser(response.data));
   };
 
@@ -140,10 +147,11 @@ function NotificationSettings() {
                   </Typography>
                 }
               />
+              {(isPushLoading || updatePushLoading) && <CircularProgress size={20} sx={{ mr: 1 }} />}
               <Switch
-                disabled={updatePreferenceLoading}
+                disabled={isPushLoading || updatePushLoading}
                 edge="end"
-                checked={user.isPushEnabled}
+                checked={optimisticPush !== null ? optimisticPush : user.isPushEnabled}
                 onChange={handlePushChange}
                 color="primary"
               />
@@ -158,8 +166,9 @@ function NotificationSettings() {
                   </Typography>
                 }
               />
+              {updateFavoriteLoading && <CircularProgress size={20} sx={{ mr: 1 }} />}
               <Switch
-                disabled={updatePreferenceLoading}
+                disabled={updateFavoriteLoading}
                 edge="end"
                 checked={user.isFavoriteFirst}
                 onChange={handleFavoriteFirstChange}
