@@ -19,12 +19,16 @@ function ItemDetailPage() {
   const { id } = useParams();
   const { execute: getFoundItemDetail, loading: foundItemDetailLoading } = useApi(foundItemService.getFoundItemDetail);
   const [item, setItem] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (id) {
       getFoundItemDetail(id)
         .then((res) => setItem(res.data))
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          setError(err.message);
+          console.error(err);
+        });
     }
   }, [id, getFoundItemDetail]);
 
@@ -33,7 +37,7 @@ function ItemDetailPage() {
   }
 
   if (!item) {
-    return <EmptyData message="해당하는 습득물 정보를 찾을 수 없습니다." />;
+    return <EmptyData message={error} />;
   }
 
   return (
